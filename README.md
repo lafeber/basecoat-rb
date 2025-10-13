@@ -32,10 +32,15 @@ Install the Basecoat application layout and partials:
 rake basecoat:install
 ```
 
-This will copy:
-- Application layout to `app/views/layouts/application.html.erb`
-- Layout partials (`_head.html.erb`, `_header.html.erb`, `_aside.html.erb`, `_notice.html.erb`, `_alert.html.erb`, `_form_errors.html.erb`)
-- Scaffold hook initializer to `config/initializers/scaffold_hook.rb`
+This will:
+- Install `basecoat-css` via yarn/npm (if package.json exists) or importmap
+- Add basecoat-css import to `app/javascript/application.js`
+- Add view transition JavaScript for turbo frames
+- Add dark mode toggle functionality
+- Add view transition CSS animations and form validation styles
+- Copy application layout to `app/views/layouts/application.html.erb`
+- Copy layout partials (`_head.html.erb`, `_header.html.erb`, `_aside.html.erb`, `_notice.html.erb`, `_alert.html.erb`, `_form_errors.html.erb`)
+- Copy scaffold hook initializer to `config/initializers/scaffold_hook.rb`
 
 The scaffold templates are automatically available from the gem, so you can immediately generate scaffolds:
 
