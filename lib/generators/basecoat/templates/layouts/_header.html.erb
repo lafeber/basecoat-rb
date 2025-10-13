@@ -8,7 +8,7 @@
       <span class="block dark:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></span>
     </button>
 
-    <% if user_signed_in? %>
+    <% if defined?(user_signed_in?) && user_signed_in? %>
       <div id="dropdown-user" class="dropdown-menu">
         <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-icon-ghost rounded-full size-8">
           <img alt="<%= current_user.email %>" src="https://github.com/lafeber.png" class="size-8 shrink-0 rounded-full">
