@@ -24,17 +24,20 @@ bundle install
 
 ## Usage
 
-### Install Scaffold Templates
+### Install Application Layout
 
-Install the beautiful Basecoat-styled scaffold templates:
+Install the Basecoat application layout and partials:
 
 ```bash
 rake basecoat:install
 ```
 
-This will copy all scaffold templates to `lib/templates/erb/scaffold/` in your Rails application.
+This will copy:
+- Application layout to `app/views/layouts/application.html.erb`
+- Layout partials (`_head.html.erb`, `_header.html.erb`, `_aside.html.erb`, `_notice.html.erb`, `_alert.html.erb`, `_form_errors.html.erb`)
+- Scaffold hook initializer to `config/initializers/scaffold_hook.rb`
 
-After installation, generate scaffolds as usual:
+The scaffold templates are automatically available from the gem, so you can immediately generate scaffolds:
 
 ```bash
 rails generate scaffold Post title:string body:text published:boolean
@@ -48,6 +51,7 @@ The generated views will include:
 - ✅ Dark mode support
 - ✅ Form validation with required fields
 - ✅ Boolean fields styled as switches
+- ✅ Automatic sidebar navigation links
 
 ### Install Devise Views
 
@@ -71,12 +75,21 @@ The Devise views include:
 
 ## Features
 
+### Application Layout
+
+- **Sidebar Navigation**: Collapsible sidebar with automatic active state detection
+- **Header**: User dropdown with sign out functionality
+- **Alerts & Notices**: Beautiful toast notifications for flash messages
+- **Form Errors**: Consistent error message styling
+- **Dark Mode**: Built-in theme toggle
+
 ### Scaffold Templates
 
 - **Modern UI**: Clean, professional design using Basecoat CSS
 - **Turbo Frames**: SPA-like navigation without full page reloads
 - **View Transitions**: Smooth slide animations between pages
 - **Smart Forms**: Automatic required field detection based on database schema
+- **Auto Sidebar Links**: New scaffolds automatically add navigation links to sidebar
 - **Dark Mode**: Built-in dark mode support
 - **Responsive**: Mobile-first responsive design
 
@@ -93,7 +106,13 @@ The Devise views include:
 - Rails 8.0+
 - Basecoat CSS
 - Turbo Rails (for scaffold templates)
-- Devise (for devise views)
+- Devise (optional, for devise views)
+
+## How It Works
+
+The gem uses Rails' template resolution system to provide scaffold templates automatically. When you run `rails generate scaffold`, Rails will use the templates from the Basecoat gem instead of the default ones.
+
+The application layout and partials are copied to your application so you can customize them as needed.
 
 ## Development
 
