@@ -5,7 +5,7 @@ module Basecoat
     end
 
     config.app_generators do |g|
-      g.templates.unshift File.expand_path("../../templates", __dir__)
+      g.templates.unshift File.expand_path("../templates", __dir__)
     end
   end
 end
