@@ -22,6 +22,8 @@ And then execute:
 bundle install
 ```
 
+**Note:** Basecoat requires Tailwind CSS. If you haven't installed it yet, follow the instructions at [https://github.com/rails/tailwindcss-rails](https://github.com/rails/tailwindcss-rails) to set up Tailwind CSS in your Rails application.
+
 ## Usage
 
 ### Install Application Layout
@@ -109,6 +111,7 @@ The Devise views include:
 ## Requirements
 
 - Rails 8.0+
+- Tailwind CSS ([installation instructions](https://github.com/rails/tailwindcss-rails))
 - Basecoat CSS
 - Turbo Rails (for scaffold templates)
 - Devise (optional, for devise views)
