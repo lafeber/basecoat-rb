@@ -1,20 +1,36 @@
 require 'fileutils'
 
 namespace :basecoat do
-  desc "Install Basecoat scaffold templates"
+  desc "Install Basecoat application layout and partials"
   task :install do
-    source = File.expand_path("../../generators/basecoat/templates/scaffold", __dir__)
-    destination = Rails.root.join("lib/templates/erb/scaffold")
+    # Copy application layout
+    layout_source = File.expand_path("../../generators/basecoat/templates/application.html.erb", __dir__)
+    layout_destination = Rails.root.join("app/views/layouts/application.html.erb")
 
-    FileUtils.mkdir_p(destination)
+    FileUtils.mkdir_p(File.dirname(layout_destination))
+    FileUtils.cp(layout_source, layout_destination)
+    puts "  Created: app/views/layouts/application.html.erb"
 
-    Dir.glob("#{source}/*").each do |file|
+    # Copy layout partials
+    partials_source = File.expand_path("../../generators/basecoat/templates/layouts", __dir__)
+    partials_destination = Rails.root.join("app/views/layouts")
+
+    Dir.glob("#{partials_source}/*").each do |file|
       filename = File.basename(file)
-      FileUtils.cp(file, destination.join(filename))
-      puts "  Created: lib/templates/erb/scaffold/#{filename}"
+      FileUtils.cp(file, partials_destination.join(filename))
+      puts "  Created: app/views/layouts/#{filename}"
     end
 
-    puts "\n✓ Basecoat scaffold templates installed successfully!"
+    # Copy scaffold hook initializer
+    initializer_source = File.expand_path("../../generators/basecoat/templates/scaffold_hook.rb", __dir__)
+    initializer_destination = Rails.root.join("config/initializers/scaffold_hook.rb")
+
+    FileUtils.mkdir_p(File.dirname(initializer_destination))
+    FileUtils.cp(initializer_source, initializer_destination)
+    puts "  Created: config/initializers/scaffold_hook.rb"
+
+    puts "\n✓ Basecoat installed successfully!"
+    puts "  Scaffold templates are automatically available from the gem."
     puts "  You can now run: rails generate scaffold YourModel"
   end
 

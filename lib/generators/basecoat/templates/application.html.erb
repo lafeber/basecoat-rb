@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <%= render "layouts/head"  %>
+  <body>
+    <%= render 'layouts/alert', alert: alert if alert %>
+    <%= render "layouts/aside" %>
+    <main>
+      <%= render "layouts/header" %>
+      <div class="py-8">
+        <%= turbo_frame_tag "main_content" do %>
+          <%= yield %>
+        <% end %>
+      </div>
+    </main>
+  </body>
+</html>
