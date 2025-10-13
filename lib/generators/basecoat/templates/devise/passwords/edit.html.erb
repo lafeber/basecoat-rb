@@ -1,0 +1,40 @@
+
+
+
+
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="card">
+      <header>
+        <h2>Change your password</h2>
+        <p>Enter your new password below.</p>
+      </header>
+      <section class="space-y-4">
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "grid gap-6" }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
+          <%= f.hidden_field :reset_password_token %>
+
+          <div class="grid gap-3">
+            <%= f.label :password, "New password", class: "label" %>
+            <% if @minimum_password_length %>
+              <span class="text-sm text-muted-foreground">(<%= @minimum_password_length %> characters minimum)</span>
+            <% end %>
+            <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "input" %>
+          </div>
+
+          <div class="grid gap-3">
+            <%= f.label :password_confirmation, "Confirm new password", class: "label" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input" %>
+          </div>
+
+          <div class="grid gap-3">
+            <%= f.submit "Change my password", class: "btn" %>
+          </div>
+        <% end %>
+      </section>
+    </div>
+    <div class="mt-6">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>

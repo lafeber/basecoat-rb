@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <%= render "layouts/head" %>
+  <body class="dark">
+    <%= render 'layouts/notice', notice: notice if notice %>
+    <div class="grid min-h-svh lg:grid-cols-2">
+      <div class="flex flex-col gap-4 p-6 md:p-10">
+        <div class="flex justify-between items-center gap-2">
+          <a href="#" class="flex items-center gap-2 font-medium">
+            <div class="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="h-4 w-4"><rect width="256" height="256" fill="none"></rect><line x1="208" y1="128" x2="128" y2="208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></line><line x1="192" y1="40" x2="40" y2="192" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></line></svg>
+            </div>
+            Basecoat
+          </a>
+          <button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="left" onclick="document.dispatchEvent(new CustomEvent('basecoat:theme'))" class="btn-icon-outline size-8">
+            <span class="hidden dark:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></span>
+            <span class="block dark:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></span>
+          </button>
+        </div>
+        <%= render 'layouts/alert', alert: alert if alert %>
+
+        <div class="flex flex-1 items-center justify-center">
+
+          <div class="w-full max-w-xs">
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+      <div class="bg-muted relative hidden lg:block">
+        <svg class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M33.2503 38.4816C33.2603 37.0472 34.4199 35.8864 35.8543 35.875H83.1463C84.5848 35.875 85.7503 37.0431 85.7503 38.4816V80.5184C85.7403 81.9528 84.5807 83.1136 83.1463 83.125H35.8543C34.4158 83.1236 33.2503 81.957 33.2503 80.5184V38.4816ZM80.5006 41.1251H38.5006V77.8751L62.8921 53.4783C63.9172 52.4536 65.5788 52.4536 66.6039 53.4783L80.5006 67.4013V41.1251ZM43.75 51.6249C43.75 54.5244 46.1005 56.8749 49 56.8749C51.8995 56.8749 54.25 54.5244 54.25 51.6249C54.25 48.7254 51.8995 46.3749 49 46.3749C46.1005 46.3749 43.75 48.7254 43.75 51.6249Z" fill="#687787"/>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

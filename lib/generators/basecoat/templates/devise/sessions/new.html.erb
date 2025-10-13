@@ -1,0 +1,38 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="card">
+      <header>
+        <h2>Log in</h2>
+        <p>Sign in to your account to continue.</p>
+      </header>
+      <section class="space-y-4">
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "grid gap-6" }) do |f| %>
+          <div class="grid gap-3">
+            <%= f.label :email, class: "label" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input" %>
+          </div>
+
+          <div class="grid gap-2">
+            <%= f.label :password, class: "label" %>
+            <%= f.password_field :password, autocomplete: "current-password", class: "input" %>
+          </div>
+
+          <% if devise_mapping.rememberable? %>
+            <div class="grid gap-2">
+              <%= f.label :remember_me, class: "label" do |builder| %>
+                <%= f.check_box :remember_me, class: "input", role: "switch" %>
+                <%= builder.translation %>
+              <% end %>
+            </div>
+          <% end %>
+          <div class="grid gap-2">
+            <%= f.submit "Log in", class: "btn" %>
+          </div>
+        <% end %>
+      </section>
+    </div>
+    <div class="mt-6">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>

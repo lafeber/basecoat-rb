@@ -1,0 +1,23 @@
+<%%= turbo_frame_tag "main_content" do %>
+<%%= render 'layouts/notice', notice: notice if notice %>
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="card">
+      <section>
+        <%%= render @<%= singular_table_name %> %>
+      </section>
+    </div>
+
+    <div class="flex flex-wrap gap-3 mt-6">
+      <%%= link_to "Edit this <%= human_name.downcase %>", <%= edit_helper(type: :path) %>, class: "btn", data: { turbo_action: "advance" } %>
+      <%%= link_to "Back to <%= human_name.pluralize.downcase %>", <%= index_helper(type: :path) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
+      <%%= button_to "Delete this <%= human_name.downcase %>",
+            <%= model_resource_name(prefix: "@") %>,
+            method: :delete,
+            class: "btn-destructive",
+            data: { turbo_confirm: "Are you sure you want to delete this <%= human_name.downcase %>?", turbo_action: "advance" },
+            form_class: "inline-block" %>
+    </div>
+  </div>
+</div>
+<%% end %>

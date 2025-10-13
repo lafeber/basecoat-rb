@@ -1,0 +1,31 @@
+
+
+
+
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="card">
+      <header>
+        <h2>Forgot your password?</h2>
+        <p>Enter your email address and we'll send you instructions to reset your password.</p>
+      </header>
+      <section class="space-y-4">
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "grid gap-6" }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
+
+          <div class="grid gap-3">
+            <%= f.label :email, class: "label" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input" %>
+          </div>
+
+          <div class="grid gap-3">
+            <%= f.submit "Send reset link", class: "btn" %>
+          </div>
+        <% end %>
+      </section>
+    </div>
+    <div class="mt-6">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>

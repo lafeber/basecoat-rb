@@ -1,0 +1,43 @@
+<%%= form_with(model: <%= model_resource_name %>, class: "space-y-6") do |form| %>
+  <%%= render "/layouts/form_errors", object: <%= singular_table_name %> if <%= singular_table_name %>.errors.any? %>
+
+<% attributes.each do |attribute| -%>
+<% required = attribute.to_s.include?('{null}') -%>
+  <div class="grid gap-3">
+<% if attribute.password_digest? -%>
+    <%%= form.label :password, class: "label" %>
+    <%%= form.password_field :password, class: "input", required: true %>
+  </div>
+
+  <div class="grid gap-3">
+    <%%= form.label :password_confirmation, class: "label" %>
+    <%%= form.password_field :password_confirmation, class: "input", required: true %>
+<% elsif attribute.attachments? -%>
+    <%%= form.label :<%= attribute.column_name %>, class: "label" %>
+    <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, multiple: true, class: "input"<%= ", required: true" if required %> %>
+<% elsif attribute.field_type == :textarea -%>
+    <%%= form.label :<%= attribute.column_name %>, class: "label" %>
+    <%%= form.text_area :<%= attribute.column_name %>, class: "textarea", rows: 4<%= ", required: true" if required %> %>
+<% elsif attribute.field_type == :check_box -%>
+    <%%= form.label :<%= attribute.column_name %>, class: "label" do %>
+      <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, class: "input", role: "switch" %>
+      <%= attribute.human_name %>
+    <%% end %>
+<% elsif attribute.field_type == :datetime_local_field || attribute.field_type == :date_field || attribute.field_type == :time_field -%>
+    <%%= form.label :<%= attribute.column_name %>, class: "label" %>
+    <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, class: "input"<%= ", required: true" if required %> %>
+<% elsif attribute.field_type == :number_field -%>
+    <%%= form.label :<%= attribute.column_name %>, class: "label" %>
+    <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, class: "input"<%= ", required: true" if required %> %>
+<% else -%>
+    <%%= form.label :<%= attribute.column_name %>, class: "label" %>
+    <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, class: "input"<%= ", required: true" if required %> %>
+<% end -%>
+  </div>
+
+<% end -%>
+  <div class="flex justify-end space-x-3 pt-6">
+    <%%= link_to "Cancel", <%= index_helper(type: :path) %>, class: "btn-outline" %>
+    <%%= form.submit class: "btn" %>
+  </div>
+<%% end %>

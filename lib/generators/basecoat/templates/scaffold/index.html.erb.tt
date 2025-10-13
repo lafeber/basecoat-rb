@@ -1,0 +1,35 @@
+<%%= turbo_frame_tag "main_content" do %>
+<%%= render 'layouts/notice', notice: notice if notice %>
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl"><%= human_name.pluralize %></h1>
+    <%%= link_to "New <%= human_name.downcase %>", <%= new_helper(type: :path) %>, class: "btn", data: { turbo_action: "advance" } %>
+  </div>
+
+  <div class="grid gap-4" id="<%= plural_table_name %>">
+    <%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
+      <div class="card">
+        <section>
+          <%%= render <%= singular_table_name %> %>
+        </section>
+        <footer class="flex items-center">
+          <%%= link_to "Show this <%= human_name.downcase %>", <%= model_resource_name(singular_table_name) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
+        </footer>
+      </div>
+    <%% end %>
+  </div>
+
+  <%% if @<%= plural_table_name %>.empty? %>
+    <div class="text-center py-12">
+      <div class="mb-4">
+        <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8V4a1 1 0 00-1-1H7a1 1 0 00-1 1v1h10z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium mb-2">No <%= human_name.pluralize.downcase %> yet</h3>
+      <p class="mb-6">Get started by creating your first <%= human_name.downcase %>.</p>
+      <%%= link_to "New <%= human_name.downcase %>", <%= new_helper(type: :path) %>, class: "btn", data: { turbo_action: "advance" } %>
+    </div>
+  <%% end %>
+</div>
+<%% end %>
