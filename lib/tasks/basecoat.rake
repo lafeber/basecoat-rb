@@ -144,14 +144,6 @@ namespace :basecoat do
     FileUtils.cp(initializer_source, initializer_destination)
     puts "  Created: config/initializers/scaffold_hook.rb"
 
-    # Copy pagy styles
-    pagy_source = File.expand_path("../generators/basecoat/templates/pagy.scss", __dir__)
-    pagy_destination = Rails.root.join("app/assets/stylesheets/pagy.scss")
-
-    FileUtils.mkdir_p(File.dirname(pagy_destination))
-    FileUtils.cp(pagy_source, pagy_destination)
-    puts "  Created: app/assets/stylesheets/pagy.scss"
-
     puts "\n✓ Basecoat installed successfully!"
     puts "  Scaffold templates are automatically available from the gem."
     puts "  You can now run: rails generate scaffold YourModel"
@@ -178,6 +170,20 @@ namespace :basecoat do
 
       puts "\n✓ Basecoat Devise views installed successfully!"
       puts "  Make sure you have Devise configured in your application."
+    end
+
+    desc "Install Basecoat Pagy pagination styles"
+    task :pagy do
+      # Copy pagy styles
+      pagy_source = File.expand_path("../../generators/basecoat/templates/pagy.scss", __dir__)
+      pagy_destination = Rails.root.join("app/assets/stylesheets/pagy.scss")
+
+      FileUtils.mkdir_p(File.dirname(pagy_destination))
+      FileUtils.cp(pagy_source, pagy_destination)
+      puts "  Created: app/assets/stylesheets/pagy.scss"
+
+      puts "\n✓ Basecoat Pagy styles installed successfully!"
+      puts "  Make sure you have Pagy configured in your application."
     end
   end
 end
