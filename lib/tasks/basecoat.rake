@@ -4,7 +4,7 @@ namespace :basecoat do
   desc "Install Basecoat application layout and partials"
   task :install do
     # Copy application layout
-    layout_source = File.expand_path("../../generators/basecoat/templates/application.html.erb", __dir__)
+    layout_source = File.expand_path("../generators/basecoat/templates/application.html.erb", __dir__)
     layout_destination = Rails.root.join("app/views/layouts/application.html.erb")
 
     FileUtils.mkdir_p(File.dirname(layout_destination))
@@ -12,7 +12,7 @@ namespace :basecoat do
     puts "  Created: app/views/layouts/application.html.erb"
 
     # Copy layout partials
-    partials_source = File.expand_path("../../generators/basecoat/templates/layouts", __dir__)
+    partials_source = File.expand_path("../generators/basecoat/templates/layouts", __dir__)
     partials_destination = Rails.root.join("app/views/layouts")
 
     Dir.glob("#{partials_source}/*").each do |file|
@@ -22,7 +22,7 @@ namespace :basecoat do
     end
 
     # Copy scaffold hook initializer
-    initializer_source = File.expand_path("../../generators/basecoat/templates/scaffold_hook.rb", __dir__)
+    initializer_source = File.expand_path("../generators/basecoat/templates/scaffold_hook.rb", __dir__)
     initializer_destination = Rails.root.join("config/initializers/scaffold_hook.rb")
 
     FileUtils.mkdir_p(File.dirname(initializer_destination))
@@ -37,7 +37,7 @@ namespace :basecoat do
   desc "Install Basecoat Devise views and layout"
   task :install_devise do
     # Copy devise views
-    devise_source = File.expand_path("../../generators/basecoat/templates/devise", __dir__)
+    devise_source = File.expand_path("../generators/basecoat/templates/devise", __dir__)
     devise_destination = Rails.root.join("app/views/devise")
 
     FileUtils.mkdir_p(devise_destination)
@@ -45,7 +45,7 @@ namespace :basecoat do
     puts "  Created: app/views/devise/"
 
     # Copy devise layout
-    layout_source = File.expand_path("../../generators/basecoat/templates/devise.html.erb", __dir__)
+    layout_source = File.expand_path("../generators/basecoat/templates/devise.html.erb", __dir__)
     layout_destination = Rails.root.join("app/views/layouts/devise.html.erb")
 
     FileUtils.mkdir_p(File.dirname(layout_destination))
