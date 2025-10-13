@@ -65,7 +65,7 @@ The generated views will include:
 Install the Basecoat-styled Devise views and layout:
 
 ```bash
-rake basecoat:install_devise
+rake basecoat:install:devise
 ```
 
 This will copy:

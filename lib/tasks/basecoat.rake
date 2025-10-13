@@ -149,25 +149,27 @@ namespace :basecoat do
     puts "  You can now run: rails generate scaffold YourModel"
   end
 
-  desc "Install Basecoat Devise views and layout"
-  task :install_devise do
-    # Copy devise views
-    devise_source = File.expand_path("../generators/basecoat/templates/devise", __dir__)
-    devise_destination = Rails.root.join("app/views/devise")
+  namespace :install do
+    desc "Install Basecoat Devise views and layout"
+    task :devise do
+      # Copy devise views
+      devise_source = File.expand_path("../../generators/basecoat/templates/devise", __dir__)
+      devise_destination = Rails.root.join("app/views/devise")
 
-    FileUtils.mkdir_p(devise_destination)
-    FileUtils.cp_r("#{devise_source}/.", devise_destination)
-    puts "  Created: app/views/devise/"
+      FileUtils.mkdir_p(devise_destination)
+      FileUtils.cp_r("#{devise_source}/.", devise_destination)
+      puts "  Created: app/views/devise/"
 
-    # Copy devise layout
-    layout_source = File.expand_path("../generators/basecoat/templates/devise.html.erb", __dir__)
-    layout_destination = Rails.root.join("app/views/layouts/devise.html.erb")
+      # Copy devise layout
+      layout_source = File.expand_path("../../generators/basecoat/templates/devise.html.erb", __dir__)
+      layout_destination = Rails.root.join("app/views/layouts/devise.html.erb")
 
-    FileUtils.mkdir_p(File.dirname(layout_destination))
-    FileUtils.cp(layout_source, layout_destination)
-    puts "  Created: app/views/layouts/devise.html.erb"
+      FileUtils.mkdir_p(File.dirname(layout_destination))
+      FileUtils.cp(layout_source, layout_destination)
+      puts "  Created: app/views/layouts/devise.html.erb"
 
-    puts "\n✓ Basecoat Devise views installed successfully!"
-    puts "  Make sure you have Devise configured in your application."
+      puts "\n✓ Basecoat Devise views installed successfully!"
+      puts "  Make sure you have Devise configured in your application."
+    end
   end
 end
