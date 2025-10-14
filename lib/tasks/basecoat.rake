@@ -168,7 +168,7 @@ namespace :basecoat do
     desc "Install Basecoat Devise views and layout"
     task :devise do
       # Copy devise views
-      devise_source = File.expand_path("../../generators/basecoat/templates/devise", __dir__)
+      devise_source = File.expand_path("../generators/basecoat/templates/devise", __dir__)
       devise_destination = Rails.root.join("app/views/devise")
 
       FileUtils.mkdir_p(devise_destination)
@@ -176,7 +176,7 @@ namespace :basecoat do
       puts "  Created: app/views/devise/"
 
       # Copy devise layout
-      layout_source = File.expand_path("../../generators/basecoat/templates/devise.html.erb", __dir__)
+      layout_source = File.expand_path("../generators/basecoat/templates/devise.html.erb", __dir__)
       layout_destination = Rails.root.join("app/views/layouts/devise.html.erb")
 
       FileUtils.mkdir_p(File.dirname(layout_destination))
