@@ -1,0 +1,30 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="card">
+      <header>
+        <h2>Update your password</h2>
+        <p>Enter your new password below.</p>
+      </header>
+      <section class="space-y-4">
+        <%= form_with url: password_path(params[:token]), method: :put, html: { class: "grid gap-6" } do |form| %>
+          <div class="grid gap-3">
+            <%= form.label :password, "New password", class: "label" %>
+            <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72, class: "input" %>
+          </div>
+
+          <div class="grid gap-3">
+            <%= form.label :password_confirmation, "Confirm password", class: "label" %>
+            <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72, class: "input" %>
+          </div>
+
+          <div class="grid gap-2">
+            <%= form.submit "Update password", class: "btn" %>
+          </div>
+        <% end %>
+      </section>
+    </div>
+    <div class="mt-6 text-center">
+      <%= link_to "Back to sign in", new_session_path, class: "text-sm hover:underline" %>
+    </div>
+  </div>
+</div>

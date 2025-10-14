@@ -97,6 +97,28 @@ The Pagy styles include:
 - ✅ Active page highlighting
 - ✅ Disabled state styling
 
+### Install Authentication Views
+
+Install the Basecoat-styled authentication views (for Rails built-in authentication):
+
+```bash
+rake basecoat:install:authentication
+```
+
+This will copy:
+- Sessions views to `app/views/sessions/`
+- Passwords views to `app/views/passwords/`
+- Sessions layout to `app/views/layouts/sessions.html.erb`
+- Adds `layout "sessions"` to `app/controllers/passwords_controller.rb`
+
+The authentication views include:
+- ✅ Beautiful sign in form
+- ✅ Password reset flows
+- ✅ Two-column layout with image placeholder
+- ✅ Dark mode toggle
+- ✅ Responsive design
+- ✅ Consistent styling with Devise views
+
 ## Features
 
 ### Application Layout

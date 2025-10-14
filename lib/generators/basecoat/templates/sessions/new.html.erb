@@ -1,0 +1,30 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <div class="card">
+      <header>
+        <h2>Sign in</h2>
+        <p>Sign in to your account to continue.</p>
+      </header>
+      <section class="space-y-4">
+        <%= form_with url: session_url, html: { class: "grid gap-6" } do |form| %>
+          <div class="grid gap-3">
+            <%= form.label :email_address, "Email", class: "label" %>
+            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address], class: "input" %>
+          </div>
+
+          <div class="grid gap-3">
+            <%= form.label :password, class: "label" %>
+            <%= form.password_field :password, required: true, autocomplete: "current-password", maxlength: 72, class: "input" %>
+          </div>
+
+          <div class="grid gap-2">
+            <%= form.submit "Sign in", class: "btn" %>
+          </div>
+        <% end %>
+      </section>
+    </div>
+    <div class="mt-6 text-center">
+      <%= link_to "Forgot password?", new_password_path, class: "text-sm hover:underline" %>
+    </div>
+  </div>
+</div>

@@ -219,5 +219,47 @@ namespace :basecoat do
       puts "\n✓ Basecoat Pagy styles installed successfully!"
       puts "  Make sure you have Pagy configured in your application."
     end
+
+    desc "Install Basecoat authentication views and layout"
+    task :authentication do
+      # Copy sessions views
+      sessions_source = File.expand_path("../generators/basecoat/templates/sessions", __dir__)
+      sessions_destination = Rails.root.join("app/views/sessions")
+
+      FileUtils.mkdir_p(sessions_destination)
+      FileUtils.cp_r("#{sessions_source}/.", sessions_destination)
+      puts "  Created: app/views/sessions/"
+
+      # Copy passwords views
+      passwords_source = File.expand_path("../generators/basecoat/templates/passwords", __dir__)
+      passwords_destination = Rails.root.join("app/views/passwords")
+
+      FileUtils.mkdir_p(passwords_destination)
+      FileUtils.cp_r("#{passwords_source}/.", passwords_destination)
+      puts "  Created: app/views/passwords/"
+
+      # Copy sessions layout
+      layout_source = File.expand_path("../generators/basecoat/templates/sessions.html.erb", __dir__)
+      layout_destination = Rails.root.join("app/views/layouts/sessions.html.erb")
+
+      FileUtils.mkdir_p(File.dirname(layout_destination))
+      FileUtils.cp(layout_source, layout_destination)
+      puts "  Created: app/views/layouts/sessions.html.erb"
+
+      # Add layout to passwords_controller
+      passwords_controller = Rails.root.join("app/controllers/passwords_controller.rb")
+      if File.exist?(passwords_controller)
+        content = File.read(passwords_controller)
+        unless content.include?('layout "sessions"')
+          # Add after the class declaration
+          updated_content = content.sub(/(class PasswordsController < ApplicationController\n)/, "\\1  layout \"sessions\"\n\n")
+          File.write(passwords_controller, updated_content)
+          puts "  Added layout to: app/controllers/passwords_controller.rb"
+        end
+      end
+
+      puts "\n✓ Basecoat authentication views installed successfully!"
+      puts "  Make sure you have Rails authentication configured in your application."
+    end
   end
 end
