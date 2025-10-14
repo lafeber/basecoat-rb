@@ -174,13 +174,32 @@ namespace :basecoat do
 
     desc "Install Basecoat Pagy pagination styles"
     task :pagy do
-      # Copy pagy styles
       pagy_source = File.expand_path("../generators/basecoat/templates/pagy.scss", __dir__)
-      pagy_destination = Rails.root.join("app/assets/stylesheets/pagy.scss")
 
-      FileUtils.mkdir_p(File.dirname(pagy_destination))
-      FileUtils.cp(pagy_source, pagy_destination)
-      puts "  Created: app/assets/stylesheets/pagy.scss"
+      # Check if using Tailwind v4 setup (app/assets/tailwind)
+      if File.exist?(Rails.root.join("app/assets/tailwind/application.css"))
+        # Copy pagy styles to tailwind directory
+        pagy_destination = Rails.root.join("app/assets/tailwind/pagy.scss")
+        FileUtils.mkdir_p(File.dirname(pagy_destination))
+        FileUtils.cp(pagy_source, pagy_destination)
+        puts "  Created: app/assets/tailwind/pagy.scss"
+
+        # Add import to tailwind application.css
+        tailwind_css = Rails.root.join("app/assets/tailwind/application.css")
+        content = File.read(tailwind_css)
+        unless content.include?("pagy")
+          File.open(tailwind_css, "a") do |f|
+            f.puts '@import "./pagy.scss";'
+          end
+          puts "  Added import to: app/assets/tailwind/application.css"
+        end
+      else
+        # Copy pagy styles to stylesheets directory
+        pagy_destination = Rails.root.join("app/assets/stylesheets/pagy.scss")
+        FileUtils.mkdir_p(File.dirname(pagy_destination))
+        FileUtils.cp(pagy_source, pagy_destination)
+        puts "  Created: app/assets/stylesheets/pagy.scss"
+      end
 
       puts "\n✓ Basecoat Pagy styles installed successfully!"
       puts "  Make sure you have Pagy configured in your application."
