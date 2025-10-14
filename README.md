@@ -92,7 +92,7 @@ This will copy:
 - Pagy styles to `app/assets/stylesheets/pagy.scss`
 
 The Pagy styles include:
-- ✅ Basecoat CSS button styling using `@extend`
+- ✅ Basecoat CSS button styling using `@apply`
 - ✅ Proper spacing and layout
 - ✅ Active page highlighting
 - ✅ Disabled state styling

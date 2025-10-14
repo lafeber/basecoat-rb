@@ -175,7 +175,7 @@ namespace :basecoat do
     desc "Install Basecoat Pagy pagination styles"
     task :pagy do
       # Copy pagy styles
-      pagy_source = File.expand_path("../../generators/basecoat/templates/pagy.scss", __dir__)
+      pagy_source = File.expand_path("../generators/basecoat/templates/pagy.scss", __dir__)
       pagy_destination = Rails.root.join("app/assets/stylesheets/pagy.scss")
 
       FileUtils.mkdir_p(File.dirname(pagy_destination))
