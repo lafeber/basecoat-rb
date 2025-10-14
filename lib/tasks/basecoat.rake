@@ -84,37 +84,52 @@ namespace :basecoat do
       end
     end
 
-    # Add CSS for view transitions and form validation
-    css_path = Rails.root.join("app/assets/stylesheets/application.css")
-    if File.exist?(css_path)
-      css_content = File.read(css_path)
+    # Add CSS imports and styles
+    # Check for Tailwind v4 setup first
+    if File.exist?(Rails.root.join("app/assets/tailwind/application.css"))
+      tailwind_css = Rails.root.join("app/assets/tailwind/application.css")
+      content = File.read(tailwind_css)
 
-      unless css_content.include?("view-transition")
-        css_code = <<~CSS
+      # Add basecoat-css import if not present
+      unless content.include?("basecoat-css")
+        # Add after tailwindcss import
+        updated_content = content.sub(/(@import "tailwindcss";)/, "\\1\n@import \"basecoat-css\";")
+        File.write(tailwind_css, updated_content)
+        puts "  Added: basecoat-css import to app/assets/tailwind/application.css"
+      end
+    else
+      # Traditional setup with app/assets/stylesheets
+      css_path = Rails.root.join("app/assets/stylesheets/application.css")
+      if File.exist?(css_path)
+        css_content = File.read(css_path)
 
-          /* View transitions */
-          ::view-transition-old(root) {
-            animation: 200ms ease-out slide-out-left;
-          }
-          ::view-transition-new(root) {
-            animation: 400ms ease-in slide-in-right;
-          }
+        unless css_content.include?("view-transition")
+          css_code = <<~CSS
 
-          @keyframes slide-out-left {
-            to { transform: translateX(-30px); opacity: 0; }
-          }
+            /* View transitions */
+            ::view-transition-old(root) {
+              animation: 200ms ease-out slide-out-left;
+            }
+            ::view-transition-new(root) {
+              animation: 400ms ease-in slide-in-right;
+            }
 
-          @keyframes slide-in-right {
-            from { transform: translateX(30px); opacity: 0; }
-          }
+            @keyframes slide-out-left {
+              to { transform: translateX(-30px); opacity: 0; }
+            }
 
-          /* Form validation styles */
-          label[aria-invalid="true"] {
-              color: var(--color-destructive);
-          }
-        CSS
-        File.open(css_path, "a") { |f| f.write(css_code) }
-        puts "  Added: View transition styles to app/assets/stylesheets/application.css"
+            @keyframes slide-in-right {
+              from { transform: translateX(30px); opacity: 0; }
+            }
+
+            /* Form validation styles */
+            label[aria-invalid="true"] {
+                color: var(--color-destructive);
+            }
+          CSS
+          File.open(css_path, "a") { |f| f.write(css_code) }
+          puts "  Added: View transition styles to app/assets/stylesheets/application.css"
+        end
       end
     end
 
