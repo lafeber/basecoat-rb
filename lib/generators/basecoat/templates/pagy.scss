@@ -1,22 +1,28 @@
 // Pagy pagination styling using Basecoat CSS classes
 
 .pagy.nav {
-  @extend .mx-auto, .flex, .w-full, .justify-center;
-  @apply flex-row items-center gap-1;
+  @apply mx-auto flex w-full justify-center flex-row items-center gap-1;
 
   a {
-    @extend .btn-icon-ghost;
+    // Base button-icon-ghost styles
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+    @apply h-9 w-9;
+    @apply hover:bg-accent hover:text-accent-foreground;
 
-    // Current/active page
+    // Current/active page (button-icon-outline)
     &[aria-current="page"],
     &.current {
-      @extend .btn-icon-outline;
+      @apply border border-input bg-background shadow-sm;
+      @apply hover:bg-accent hover:text-accent-foreground;
     }
 
-    // Previous and Next buttons
+    // Previous and Next buttons (button-ghost)
     &[aria-label="Previous"],
     &[aria-label="Next"] {
-      @extend .btn-ghost;
+      @apply h-9 px-3 w-auto;
+      @apply hover:bg-accent hover:text-accent-foreground;
     }
 
     // Disabled state
