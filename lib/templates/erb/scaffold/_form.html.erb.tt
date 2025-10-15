@@ -18,9 +18,9 @@
 <% elsif attribute.field_type == :textarea -%>
     <%%= form.label :<%= attribute.column_name %>, class: "label" %>
     <%%= form.text_area :<%= attribute.column_name %>, class: "textarea", rows: 4<%= ", required: true" if required %> %>
-<% elsif attribute.field_type == :check_box -%>
+<% elsif attribute.field_type == :checkbox -%>
     <%%= form.label :<%= attribute.column_name %>, class: "label" do %>
-      <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, class: "input", role: "switch" %>
+      <%%= form.check_box :<%= attribute.column_name %>, class: "input", role: "switch" %>
       <%= attribute.human_name %>
     <%% end %>
 <% elsif attribute.field_type == :datetime_local_field || attribute.field_type == :date_field || attribute.field_type == :time_field -%>
