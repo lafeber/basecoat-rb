@@ -9,8 +9,7 @@ namespace :basecoat do
     puts "  Installed: basecoat-css via yarn/npm"
 
     # If using importmap, also add to importmap.rb for JS
-    unless File.exist?(Rails.root.join("package.json"))
-      system("bin/rails importmap:install") unless File.exist?(Rails.root.join("config/importmap.rb"))
+    if File.exist?(Rails.root.join("config/importmap.rb"))
       importmap_path = Rails.root.join("config/importmap.rb")
       importmap_content = File.read(importmap_path)
       unless importmap_content.include?("basecoat-css")
