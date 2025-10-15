@@ -1,6 +1,22 @@
-# Basecoat
+# All of the shadcn/ui styling, all of the Rails power, no React
 
-Rails scaffold templates and Devise views styled with [Basecoat CSS](https://basecoatui.com).
+This gem provides you with amazing frontend based on [Basecoat CSS](https://basecoatui.com). 
+It is especially powerful for admin applications with a lot of CRUD actions. 
+
+Experience beautiful Rails scaffolds, pages for authentication and Devise, and pagy styling. 
+All responsive, all dark & light mode. See all the features below.
+
+## Why?
+
+There is a new default component library for the web; it's called shadcn. 
+As a developer you are standing on the shoulders of a giant with every component they provide. 
+However... in many (most?) applications you don't need complicated components - 
+e.g. an input field can just be a html tag, not a separate component with its own shadow DOM. 
+
+This is where basecoat-css comes in.
+
+You can still include complicated shadcn React components if you need them, 
+but most of your application is just the simple rails views, leveraging the power of Rails.
 
 ## Installation
 
@@ -25,6 +41,8 @@ bundle install
 **Note:** Basecoat requires Tailwind CSS. If you haven't installed it yet, follow the instructions at [https://github.com/rails/tailwindcss-rails](https://github.com/rails/tailwindcss-rails) to set up Tailwind CSS in your Rails application.
 
 ## Usage
+
+Run the rake tasks, run a scaffold and observe beauty.
 
 ### Install Application Layout
 
@@ -51,14 +69,14 @@ rails generate scaffold Post title:string body:text published:boolean
 ```
 
 The generated views will include:
-- ✅ Basecoat CSS styling
-- ✅ Turbo Frame support for SPA-like navigation
-- ✅ View transitions
-- ✅ Responsive design
-- ✅ Dark mode support
-- ✅ Form validation with required fields
-- ✅ Boolean fields styled as switches
-- ✅ Automatic sidebar navigation links
+*  Basecoat CSS styling
+*  Turbo Frame support for SPA-like navigation
+*  View transitions
+*  Responsive design
+*  Dark mode support
+*  Form validation with required fields
+*  Boolean fields styled as switches
+*  Automatic sidebar navigation links
 
 ### Install Devise Views
 
@@ -73,12 +91,12 @@ This will copy:
 - Devise layout to `app/views/layouts/devise.html.erb`
 
 The Devise views include:
-- ✅ Beautiful login/signup forms
-- ✅ Two-column layout with image placeholder
-- ✅ Dark mode toggle
-- ✅ Responsive design
-- ✅ Password reset flows
-- ✅ Email confirmation views
+-  Beautiful login/signup forms
+*  Two-column layout with image placeholder
+*  Dark mode toggle
+*  Responsive design
+*  Password reset flows
+*  Email confirmation views
 
 ### Install Pagy Pagination Styles
 
@@ -92,10 +110,11 @@ This will copy:
 - Pagy styles to `app/assets/stylesheets/pagy.scss`
 
 The Pagy styles include:
-- ✅ Basecoat CSS button styling using `@apply`
-- ✅ Proper spacing and layout
-- ✅ Active page highlighting
-- ✅ Disabled state styling
+
+*  Basecoat CSS button styling using `@apply`
+*  Proper spacing and layout
+*  Active page highlighting
+*  Disabled state styling
 
 ### Install Authentication Views
 
@@ -112,12 +131,13 @@ This will copy:
 - Adds `layout "sessions"` to `app/controllers/passwords_controller.rb`
 
 The authentication views include:
-- ✅ Beautiful sign in form
-- ✅ Password reset flows
-- ✅ Two-column layout with image placeholder
-- ✅ Dark mode toggle
-- ✅ Responsive design
-- ✅ Consistent styling with Devise views
+
+*  Beautiful sign in form
+*  Password reset flows
+*  Two-column layout with image placeholder
+*  Dark mode toggle
+*  Responsive design
+*  Consistent styling with Devise views
 
 ## Features
 
@@ -153,7 +173,6 @@ The authentication views include:
 - Tailwind CSS ([installation instructions](https://github.com/rails/tailwindcss-rails))
 - Basecoat CSS
 - Turbo Rails (for scaffold templates)
-- Devise (optional, for devise views)
 
 ## How It Works
 
@@ -161,9 +180,16 @@ The gem uses Rails' template resolution system to provide scaffold templates aut
 
 The application layout and partials are copied to your application so you can customize them as needed.
 
-## Development
+## Discussion
 
-After checking out the repo, run `bin/setup` to install dependencies.
+I tried not to be too opinionated with my scaffolds - they're very close to the original ones. With the exception of 
+using a turbo frame main_content. I love this too much not to include it.
+
+However, I have my doubts with the index page reusing the show partial. Especially in admin applications you might want 
+to have a (responsive) table in the index.
+
+Also, the arguably ugliest part of the views are the svg tags which contains the lovely lucide icons. 
+Since these icons are the default for shadcn I'm considering including https://github.com/heyvito/lucide-rails to clean up the views. 
 
 ## Contributing
 
