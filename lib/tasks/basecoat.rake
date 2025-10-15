@@ -3,13 +3,13 @@ require 'fileutils'
 namespace :basecoat do
   desc "Install Basecoat application layout and partials"
   task :install do
-    # Install basecoat-css
+    # Install basecoat-css (always install via yarn/npm for CSS)
     puts "\n📦 Installing basecoat-css..."
-    if File.exist?(Rails.root.join("package.json"))
-      system("yarn add basecoat-css") || system("npm install basecoat-css")
-      puts "  Installed: basecoat-css via yarn/npm"
-    else
-      # Using importmap
+    system("yarn add basecoat-css") || system("npm install basecoat-css")
+    puts "  Installed: basecoat-css via yarn/npm"
+
+    # If using importmap, also add to importmap.rb for JS
+    unless File.exist?(Rails.root.join("package.json"))
       system("bin/rails importmap:install") unless File.exist?(Rails.root.join("config/importmap.rb"))
       importmap_path = Rails.root.join("config/importmap.rb")
       importmap_content = File.read(importmap_path)
