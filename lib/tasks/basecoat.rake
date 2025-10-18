@@ -32,6 +32,20 @@ namespace :basecoat do
         puts "  Added: basecoat-css import to app/javascript/application.js"
       end
 
+      # Add Turbo compatibility for basecoat-css
+      js_content = File.read(js_path)
+      unless js_content.include?("turbo:load") && js_content.include?("DOMContentLoaded")
+        turbo_fix_code = <<~JS
+
+          // Re-initialize basecoat-css components after Turbo navigation
+          document.addEventListener('turbo:load', () => {
+            document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true, cancelable: false }))
+          })
+        JS
+        File.open(js_path, "a") { |f| f.write(turbo_fix_code) }
+        puts "  Added: Turbo compatibility for basecoat-css to app/javascript/application.js"
+      end
+
       # Add view transitions code
       unless js_content.include?("turbo:before-frame-render")
         view_transition_code = <<~JS
