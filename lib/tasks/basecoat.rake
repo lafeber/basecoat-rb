@@ -102,19 +102,17 @@ namespace :basecoat do
       if File.exist?(css_path)
         css_content = File.read(css_path)
 
-        unless css_content.include?("view-transition")
-          css_code = <<~CSS
-            .field_with_errors label {
-                color: var(--color-destructive);
-            }
-            
-            .field_with_errors input {
-                border-color: var(--color-destructive);
-            }
-          CSS
-          File.open(css_path, "a") { |f| f.write(css_code) }
-          puts "  Added: View transition styles to app/assets/stylesheets/application.css"
-        end
+        css_code = <<~CSS
+          .field_with_errors label {
+              color: var(--color-destructive);
+          }
+          
+          .field_with_errors input {
+              border-color: var(--color-destructive);
+          }
+        CSS
+        File.open(css_path, "a") { |f| f.write(css_code) }
+        puts "  Added: invalid input styles to app/assets/stylesheets/application.css"
       end
     end
 
