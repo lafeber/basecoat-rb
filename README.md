@@ -23,13 +23,7 @@ but most of your application is just the simple rails views, leveraging the powe
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'basecoat', path: '/Users/martijn.lafeber/sites/basecoat'
-```
-
-Or install from a git repository:
-
-```ruby
-gem 'basecoat', git: 'https://github.com/yourusername/basecoat'
+gem 'basecoat'
 ```
 
 And then execute:
