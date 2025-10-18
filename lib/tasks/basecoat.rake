@@ -104,26 +104,12 @@ namespace :basecoat do
 
         unless css_content.include?("view-transition")
           css_code = <<~CSS
-
-            /* View transitions */
-            ::view-transition-old(root) {
-              animation: 200ms ease-out slide-out-left;
-            }
-            ::view-transition-new(root) {
-              animation: 400ms ease-in slide-in-right;
-            }
-
-            @keyframes slide-out-left {
-              to { transform: translateX(-30px); opacity: 0; }
-            }
-
-            @keyframes slide-in-right {
-              from { transform: translateX(30px); opacity: 0; }
-            }
-
-            /* Form validation styles */
-            label[aria-invalid="true"] {
+            .field_with_errors label {
                 color: var(--color-destructive);
+            }
+            
+            .field_with_errors input {
+                border-color: var(--color-destructive);
             }
           CSS
           File.open(css_path, "a") { |f| f.write(css_code) }
