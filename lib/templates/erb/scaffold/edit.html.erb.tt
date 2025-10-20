@@ -1,6 +1,5 @@
 <%%= turbo_frame_tag "main_content" do %>
-<%%= render 'layouts/notice', notice: notice if notice %>
-<div class="container mx-auto px-4 py-8">
+  <%%= render 'layouts/notice', notice: notice if notice %>
   <div class="max-w-2xl mx-auto">
     <div class="card">
       <header>
@@ -17,5 +16,4 @@
       <%%= link_to "Back to <%= human_name.pluralize.downcase %>", <%= index_helper(type: :path) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
     </div>
   </div>
-</div>
 <%% end %>

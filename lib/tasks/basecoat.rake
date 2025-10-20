@@ -3,10 +3,27 @@ require 'fileutils'
 namespace :basecoat do
   desc "Install Basecoat application layout and partials"
   task :install do
-    # Install basecoat-css (always install via yarn/npm for CSS)
+    # Install basecoat-css (detect package manager)
     puts "\n📦 Installing basecoat-css..."
-    system("yarn add basecoat-css") || system("npm install basecoat-css")
-    puts "  Installed: basecoat-css via yarn/npm"
+
+    # Detect package manager
+    if File.exist?(Rails.root.join("bun.lockb"))
+      system("bun add basecoat-css")
+      puts "  Installed: basecoat-css via bun"
+    elsif File.exist?(Rails.root.join("yarn.lock"))
+      system("yarn add basecoat-css")
+      puts "  Installed: basecoat-css via yarn"
+    elsif File.exist?(Rails.root.join("package-lock.json"))
+      system("npm install basecoat-css")
+      puts "  Installed: basecoat-css via npm"
+    elsif File.exist?(Rails.root.join("pnpm-lock.yaml"))
+      system("pnpm add basecoat-css")
+      puts "  Installed: basecoat-css via pnpm"
+    else
+      # Fallback: try bun first, then yarn, then npm
+      system("bun add basecoat-css") || system("yarn add basecoat-css") || system("npm install basecoat-css")
+      puts "  Installed: basecoat-css"
+    end
 
     # If using importmap, also add to importmap.rb for JS
     if File.exist?(Rails.root.join("config/importmap.rb"))
@@ -52,7 +69,7 @@ namespace :basecoat do
       js_content = File.read(js_path)
       unless js_content.include?("basecoat-helper")
         # Add import after the last import line
-        js_content = js_content.sub(/(import\s+.*\n)(?!import)/, "\\1import \"basecoat-helper\"\n")
+        js_content = js_content.sub(/(import\s+.*\n)(?!import)/, "\\1import \"./basecoat-helper.js\"\n")
         File.write(js_path, js_content)
         puts "  Added: basecoat-helper import to app/javascript/application.js"
       end
@@ -73,38 +90,80 @@ namespace :basecoat do
       end
     else
       # Traditional setup with app/assets/stylesheets
-      css_path = Rails.root.join("app/assets/stylesheets/application.css")
+      # Check for application.tailwind.css first, then application.css
+      css_path = if File.exist?(Rails.root.join("app/assets/stylesheets/application.tailwind.css"))
+                   Rails.root.join("app/assets/stylesheets/application.tailwind.css")
+                 else
+                   Rails.root.join("app/assets/stylesheets/application.css")
+                 end
+
       if File.exist?(css_path)
         css_content = File.read(css_path)
 
         css_code = <<~CSS
+          @import "basecoat-css";
+
           .field_with_errors label {
               color: var(--color-destructive);
           }
-          
+
           .field_with_errors input {
               border-color: var(--color-destructive);
           }
+
+          .table tr:hover td, .table tr:hover th {
+              background-color:var(--color-muted)
+          }
+
+          dl {
+              font-size: var(--text-sm);
+          }
+
+          dt {
+              font-weight: var(--font-weight-bold);
+              margin-top: calc(var(--spacing)*4);
+          }
         CSS
         File.open(css_path, "a") { |f| f.write(css_code) }
-        puts "  Added: invalid input styles to app/assets/stylesheets/application.css"
+        puts "  Added: invalid input styles to #{css_path.relative_path_from(Rails.root)}"
       end
+    end
+
+    # Extract <head> from existing application.html.erb BEFORE overwriting it
+    layout_destination = Rails.root.join("app/views/layouts/application.html.erb")
+    partials_source = File.expand_path("../generators/basecoat/templates/layouts", __dir__)
+    partials_destination = Rails.root.join("app/views/layouts")
+
+    FileUtils.mkdir_p(partials_destination)
+
+    if File.exist?(layout_destination)
+      content = File.read(layout_destination)
+      # Extract everything between <head> and </head>
+      if content =~ /(<head>.*?<\/head>)/m
+        head_content = $1
+        head_destination = partials_destination.join("_head.html.erb")
+        File.write(head_destination, head_content + "\n")
+        puts "  Created: app/views/layouts/_head.html.erb (extracted from existing application.html.erb)"
+      else
+        # Fallback: copy the template if no <head> found in existing layout
+        FileUtils.cp("#{partials_source}/_head.html.erb", partials_destination.join("_head.html.erb"))
+        puts "  Created: app/views/layouts/_head.html.erb (from template)"
+      end
+    else
+      # No existing layout, use template
+      FileUtils.cp("#{partials_source}/_head.html.erb", partials_destination.join("_head.html.erb"))
+      puts "  Created: app/views/layouts/_head.html.erb (from template)"
     end
 
     # Copy application layout
     layout_source = File.expand_path("../generators/basecoat/templates/application.html.erb", __dir__)
-    layout_destination = Rails.root.join("app/views/layouts/application.html.erb")
-
-    FileUtils.mkdir_p(File.dirname(layout_destination))
     FileUtils.cp(layout_source, layout_destination)
     puts "  Created: app/views/layouts/application.html.erb"
 
-    # Copy layout partials
-    partials_source = File.expand_path("../generators/basecoat/templates/layouts", __dir__)
-    partials_destination = Rails.root.join("app/views/layouts")
-
+    # Copy layout partials (except _head.html.erb which we already handled)
     Dir.glob("#{partials_source}/*").each do |file|
       filename = File.basename(file)
+      next if filename == "_head.html.erb" # Skip _head.html.erb, we already created it
       FileUtils.cp(file, partials_destination.join(filename))
       puts "  Created: app/views/layouts/#{filename}"
     end

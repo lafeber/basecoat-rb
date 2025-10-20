@@ -6,7 +6,7 @@
     <%= render "layouts/aside" %>
     <main>
       <%= render "layouts/header" %>
-      <div class="py-8">
+      <div class="py-8 px-4">
         <%= turbo_frame_tag "main_content" do %>
           <%= yield %>
         <% end %>

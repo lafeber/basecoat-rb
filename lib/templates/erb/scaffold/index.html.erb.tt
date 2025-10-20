@@ -1,22 +1,47 @@
 <%%= turbo_frame_tag "main_content" do %>
-<%%= render 'layouts/notice', notice: notice if notice %>
-<div class="container mx-auto px-4 py-8">
+  <%%= render 'layouts/notice', notice: notice if notice %>
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl"><%= human_name.pluralize %></h1>
     <%%= link_to "New <%= human_name.downcase %>", <%= new_helper(type: :path) %>, class: "btn", data: { turbo_action: "advance" } %>
   </div>
 
-  <div class="grid gap-4" id="<%= plural_table_name %>">
-    <%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
-      <div class="card">
-        <section>
-          <%%= render <%= singular_table_name %> %>
-        </section>
-        <footer class="flex items-center">
-          <%%= link_to "Show this <%= human_name.downcase %>", <%= model_resource_name(singular_table_name) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
-        </footer>
-      </div>
-    <%% end %>
+  <div class="overflow-x-auto" id="<%= plural_table_name %>">
+    <table class="table">
+      <thead>
+        <tr>
+<% attributes.reject(&:password_digest?).each do |attribute| -%>
+          <th>
+            <%= attribute.human_name %>
+          </th>
+<% end -%>
+          <th class="bg-background sticky right-0">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
+          <tr>
+<% attributes.reject(&:password_digest?).each do |attribute| -%>
+            <td>
+<% if attribute.attachment? -%>
+              <%%= link_to <%= singular_table_name %>.<%= attribute.column_name %>.filename, <%= singular_table_name %>.<%= attribute.column_name %>, target: :_blank, class: "text-blue-600 hover:text-blue-800 underline" if <%= singular_table_name %>.<%= attribute.column_name %>.attached? %>
+<% elsif attribute.attachments? -%>
+              <%% <%= singular_table_name %>.<%= attribute.column_name %>.each do |<%= attribute.singular_name %>| %>
+                <div><%%= link_to <%= attribute.singular_name %>.filename, <%= attribute.singular_name %>, target: :_blank, class: "text-blue-600 hover:text-blue-800 underline" %></div>
+              <%% end %>
+<% else -%>
+              <%%= <%= singular_table_name %>.<%= attribute.column_name %> %>
+<% end -%>
+            </td>
+<% end -%>
+            <td class="bg-background sticky right-0">
+              <%%= link_to "Show", <%= model_resource_name(singular_table_name) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
+            </td>
+          </tr>
+        <%% end %>
+      </tbody>
+    </table>
   </div>
 
   <%% if @<%= plural_table_name %>.empty? %>
@@ -31,5 +56,4 @@
       <%%= link_to "New <%= human_name.downcase %>", <%= new_helper(type: :path) %>, class: "btn", data: { turbo_action: "advance" } %>
     </div>
   <%% end %>
-</div>
 <%% end %>
