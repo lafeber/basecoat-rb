@@ -8,13 +8,13 @@
   <div class="overflow-x-auto" id="<%= plural_table_name %>">
     <table class="table">
       <thead>
-        <tr>
+        <tr class="bg-background hover:bg-muted">
 <% attributes.reject(&:password_digest?).each do |attribute| -%>
           <th>
             <%= attribute.human_name %>
           </th>
 <% end -%>
-          <th class="bg-background sticky right-0">
+          <th class="sticky right-0">
             Actions
           </th>
         </tr>
@@ -35,7 +35,7 @@
 <% end -%>
             </td>
 <% end -%>
-            <td class="bg-background sticky right-0">
+            <td class="sticky right-0">
               <%%= link_to "Show", <%= model_resource_name(singular_table_name) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
             </td>
           </tr>

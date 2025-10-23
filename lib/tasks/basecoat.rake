@@ -105,45 +105,39 @@ namespace :basecoat do
         File.write(tailwind_css, updated_content)
         puts "  Added: basecoat-css import to app/assets/tailwind/application.css"
       end
-    else
-      # Traditional setup with app/assets/stylesheets
-      # Check for application.tailwind.css first, then application.css
-      css_path = if File.exist?(Rails.root.join("app/assets/stylesheets/application.tailwind.css"))
-                   Rails.root.join("app/assets/stylesheets/application.tailwind.css")
-                 else
-                   Rails.root.join("app/assets/stylesheets/application.css")
-                 end
+    end
+    # Traditional setup with app/assets/stylesheets
+    # Check for application.tailwind.css first, then application.css
+    css_path = if File.exist?(Rails.root.join("app/assets/stylesheets/application.tailwind.css"))
+                 Rails.root.join("app/assets/stylesheets/application.tailwind.css")
+               else
+                 Rails.root.join("app/assets/stylesheets/application.css")
+               end
 
-      if File.exist?(css_path)
-        css_content = File.read(css_path)
+    if File.exist?(css_path)
+      css_content = File.read(css_path)
 
-        css_code = <<~CSS
-          @import "basecoat-css";
+      css_code = <<~CSS
+        .field_with_errors {
+            label {
+                color: var(--color-destructive);
+            }
+        
+            input {
+                border-color: var(--color-destructive);
+            }
+        }
 
-          .field_with_errors label {
-              color: var(--color-destructive);
-          }
-
-          .field_with_errors input {
-              border-color: var(--color-destructive);
-          }
-
-          .table tr:hover td, .table tr:hover th {
-              background-color:var(--color-muted)
-          }
-
-          dl {
-              font-size: var(--text-sm);
-          }
-
-          dt {
-              font-weight: var(--font-weight-bold);
-              margin-top: calc(var(--spacing)*4);
-          }
-        CSS
-        File.open(css_path, "a") { |f| f.write(css_code) }
-        puts "  Added: invalid input styles to #{css_path.relative_path_from(Rails.root)}"
-      end
+        dl {
+            font-size: var(--text-sm);
+            dt {
+                font-weight: var(--font-weight-bold);
+                margin-top: calc(var(--spacing)*4);
+            }
+        }
+      CSS
+      File.open(css_path, "a") { |f| f.write(css_code) }
+      puts "  Added: basic styles to #{css_path.relative_path_from(Rails.root)}"
     end
 
     # Extract <head> from existing application.html.erb BEFORE overwriting it
