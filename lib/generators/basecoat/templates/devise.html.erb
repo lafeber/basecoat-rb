@@ -5,17 +5,14 @@
     <%= render 'layouts/notice', notice: notice if notice %>
     <div class="grid min-h-svh lg:grid-cols-2">
       <div class="flex flex-col gap-4 p-6 md:p-10">
-        <div class="flex justify-between items-center gap-2">
+        <div class="flex justify-between items-center gap-2" data-controller="theme">
           <a href="#" class="flex items-center gap-2 font-medium">
             <div class="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="h-4 w-4"><rect width="256" height="256" fill="none"></rect><line x1="208" y1="128" x2="128" y2="208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></line><line x1="192" y1="40" x2="40" y2="192" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></line></svg>
             </div>
             Basecoat
           </a>
-          <button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="left" onclick="document.dispatchEvent(new CustomEvent('basecoat:theme'))" class="btn-icon-outline size-8">
-            <span class="hidden dark:block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></span>
-            <span class="block dark:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></span>
-          </button>
+          <%= render "layouts/theme_toggle" %>
         </div>
         <%= render 'layouts/alert', alert: alert if alert %>
 
