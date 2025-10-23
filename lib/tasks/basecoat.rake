@@ -58,21 +58,38 @@ namespace :basecoat do
         puts "  Added: basecoat-css import to app/javascript/application.js"
       end
 
-      # Copy basecoat-helper.js
-      helper_source = File.expand_path("../generators/basecoat/templates/basecoat-helper.js", __dir__)
-      helper_destination = Rails.root.join("app/javascript/basecoat-helper.js")
-
-      FileUtils.cp(helper_source, helper_destination)
-      puts "  Created: app/javascript/basecoat-helper.js"
-
-      # Add basecoat-helper import
+      # Add basecoat helper JavaScript directly to application.js
       js_content = File.read(js_path)
-      unless js_content.include?("basecoat-helper")
-        # Add import after the last import line
-        js_content = js_content.sub(/(import\s+.*\n)(?!import)/, "\\1import \"./basecoat-helper.js\"\n")
-        File.write(js_path, js_content)
-        puts "  Added: basecoat-helper import to app/javascript/application.js"
+      unless js_content.include?("Re-initialize basecoat-css components")
+        basecoat_js = <<~JS
+
+          // Re-initialize basecoat-css components after Turbo navigation
+          document.addEventListener('turbo:load', () => {
+            document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true, cancelable: false }))
+          })
+
+          // View transitions for turbo frame navigation
+          addEventListener("turbo:before-frame-render", (event) => {
+              if (document.startViewTransition) {
+                  const originalRender = event.detail.render
+                  event.detail.render = async (currentElement, newElement) => {
+                      const transition = document.startViewTransition(() => originalRender(currentElement, newElement))
+                      await transition.finished
+                  }
+              }
+          })
+        JS
+        File.open(js_path, "a") { |f| f.write(basecoat_js) }
+        puts "  Added: Basecoat helper JavaScript to app/javascript/application.js"
       end
+
+      # Copy theme_controller.js
+      theme_controller_source = File.expand_path("../generators/basecoat/templates/theme_controller.js", __dir__)
+      theme_controller_destination = Rails.root.join("app/javascript/controllers/theme_controller.js")
+
+      FileUtils.mkdir_p(File.dirname(theme_controller_destination))
+      FileUtils.cp(theme_controller_source, theme_controller_destination)
+      puts "  Created: app/javascript/controllers/theme_controller.js"
     end
 
     # Add CSS imports and styles
