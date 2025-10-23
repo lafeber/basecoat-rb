@@ -167,6 +167,7 @@ The authentication views include:
 - Tailwind CSS ([installation instructions](https://github.com/rails/tailwindcss-rails))
 - Basecoat CSS
 - Turbo Rails (for scaffold templates)
+- Stimulus (for the theme toggle, can be moved to something else if you desire...)
 
 ## How It Works
 
