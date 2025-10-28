@@ -1,17 +1,25 @@
-# Basecoat powered views for Rails
+# Basecoat (shadcn) powered views for Rails
 
 This gem provides you with amazing layouts, scaffolds, views and partials based on [Basecoat UI](https://basecoatui.com).
 It is especially powerful for admin applications with a lot of CRUD actions.
 
 Beautiful responsive, dark & light mode Rails scaffolds, pages for authentication and Devise, and pagy styling.
 
+Login:
+![Basecoat Login](basecoat-login.png)
+Index:
+![Basecoat Index](basecoat-index.png)
+Form, mobile dark mode:
+![Basecoat Dark Form](basecoat-dark-form.png)
+
 ## Why?
 
-Shadcn has quickly the default ui for the web. However, we don't need /really/ the all the React components.
+Shadcn has quickly become the default ui for the web. However, sometimes we don't _really_ need all the React components.
+Especially with backend applications - where Rails shines as full stack solution.
 
-This is where basecoat-ui comes in. The reason why I chose basecoat is because it combines tailwind with clean css classes (like daisy-ui). 
+This is where basecoat-ui comes in. The reason why I love basecoat is because it combines tailwind with clean css classes (like daisy-ui). 
 
-You can combine it with https://railsblocks.com/ or 
+If you need more complex components; enrich the views with https://railsblocks.com/ or https://shadcn.rails-components.com/ or just the shadcn React components themselves.
 
 ## Installation
 
@@ -40,6 +48,7 @@ Install the Basecoat application layout and partials:
 ```bash
 rake basecoat:install
 ```
+NB: This could overwrite exising files!
 
 The generated views will include:
 *  Basecoat CSS styling
@@ -64,6 +73,7 @@ Install the Basecoat-styled Devise views and layout:
 ```bash
 rake basecoat:install:devise
 ```
+NB: This will overwrite exising files!
 
 ### Install Authentication Views
 
@@ -72,6 +82,7 @@ Install the Basecoat-styled authentication views (for Rails built-in authenticat
 ```bash
 rake basecoat:install:authentication
 ```
+NB: This will overwrite exising files!
 
 ### Install Pagy Pagination Styles
 
