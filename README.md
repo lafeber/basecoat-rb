@@ -1,26 +1,21 @@
-# All of the shadcn/ui styling, all of the Rails power, no React
+# Basecoat powered views for Rails
 
-This gem provides you with amazing frontend based on [Basecoat CSS](https://basecoatui.com). 
-It is especially powerful for admin applications with a lot of CRUD actions. 
+This gem provides you with amazing layouts, scaffolds, views and partials based on [Basecoat UI](https://basecoatui.com).
+It is especially powerful for admin applications with a lot of CRUD actions.
 
-Experience beautiful Rails scaffolds, pages for authentication and Devise, and pagy styling. 
-All responsive, all dark & light mode. See all the features below.
+Beautiful responsive, dark & light mode Rails scaffolds, pages for authentication and Devise, and pagy styling.
 
 ## Why?
 
-There is a new default component library for the web; it's called shadcn. 
-As a developer you are standing on the shoulders of a giant with every component they provide. 
-However... in many (most?) applications you don't need complicated components - 
-e.g. an input field can just be a html tag, not a separate component with its own shadow DOM. 
+Shadcn has quickly the default ui for the web. However, we don't need /really/ the all the React components.
 
-This is where basecoat-css comes in.
+This is where basecoat-ui comes in. The reason why I chose basecoat is because it combines tailwind with clean css classes (like daisy-ui). 
 
-You can still include complicated shadcn React components if you need them, 
-but most of your application is just the simple rails views, leveraging the power of Rails.
+You can combine it with https://railsblocks.com/ or 
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile in the development group:
 
 ```ruby
 gem 'basecoat'
@@ -46,22 +41,6 @@ Install the Basecoat application layout and partials:
 rake basecoat:install
 ```
 
-This will:
-- Install `basecoat-css` via yarn/npm (if package.json exists) or importmap
-- Add basecoat-css import to `app/javascript/application.js`
-- Add view transition JavaScript for turbo frames
-- Add dark mode toggle functionality
-- Add view transition CSS animations and form validation styles
-- Copy application layout to `app/views/layouts/application.html.erb`
-- Copy layout partials (`_head.html.erb`, `_header.html.erb`, `_aside.html.erb`, `_notice.html.erb`, `_alert.html.erb`, `_form_errors.html.erb`)
-- Copy scaffold hook initializer to `config/initializers/scaffold_hook.rb`
-
-The scaffold templates are automatically available from the gem, so you can immediately generate scaffolds:
-
-```bash
-rails generate scaffold Post title:string body:text published:boolean
-```
-
 The generated views will include:
 *  Basecoat CSS styling
 *  Turbo Frame support for SPA-like navigation
@@ -72,6 +51,12 @@ The generated views will include:
 *  Boolean fields styled as switches
 *  Automatic sidebar navigation links
 
+The scaffold templates are automatically available from the gem, so you can immediately generate scaffolds:
+
+```bash
+rails generate scaffold Post title:string body:text published:boolean
+```
+
 ### Install Devise Views
 
 Install the Basecoat-styled Devise views and layout:
@@ -79,36 +64,6 @@ Install the Basecoat-styled Devise views and layout:
 ```bash
 rake basecoat:install:devise
 ```
-
-This will copy:
-- All Devise views to `app/views/devise/`
-- Devise layout to `app/views/layouts/devise.html.erb`
-
-The Devise views include:
--  Beautiful login/signup forms
-*  Two-column layout with image placeholder
-*  Dark mode toggle
-*  Responsive design
-*  Password reset flows
-*  Email confirmation views
-
-### Install Pagy Pagination Styles
-
-Install the Basecoat-styled Pagy pagination:
-
-```bash
-rake basecoat:install:pagy
-```
-
-This will copy:
-- Pagy styles to `app/assets/stylesheets/pagy.scss`
-
-The Pagy styles include:
-
-*  Basecoat CSS button styling using `@apply`
-*  Proper spacing and layout
-*  Active page highlighting
-*  Disabled state styling
 
 ### Install Authentication Views
 
@@ -118,48 +73,13 @@ Install the Basecoat-styled authentication views (for Rails built-in authenticat
 rake basecoat:install:authentication
 ```
 
-This will copy:
-- Sessions views to `app/views/sessions/`
-- Passwords views to `app/views/passwords/`
-- Sessions layout to `app/views/layouts/sessions.html.erb`
-- Adds `layout "sessions"` to `app/controllers/passwords_controller.rb`
+### Install Pagy Pagination Styles
 
-The authentication views include:
+Install the Basecoat-styled Pagy pagination:
 
-*  Beautiful sign in form
-*  Password reset flows
-*  Two-column layout with image placeholder
-*  Dark mode toggle
-*  Responsive design
-*  Consistent styling with Devise views
-
-## Features
-
-### Application Layout
-
-- **Sidebar Navigation**: Collapsible sidebar with automatic active state detection
-- **Header**: User dropdown with sign out functionality
-- **Alerts & Notices**: Beautiful toast notifications for flash messages
-- **Form Errors**: Consistent error message styling
-- **Dark Mode**: Built-in theme toggle
-
-### Scaffold Templates
-
-- **Modern UI**: Clean, professional design using Basecoat CSS
-- **Turbo Frames**: SPA-like navigation without full page reloads
-- **View Transitions**: Smooth slide animations between pages
-- **Smart Forms**: Automatic required field detection based on database schema
-- **Auto Sidebar Links**: New scaffolds automatically add navigation links to sidebar
-- **Dark Mode**: Built-in dark mode support
-- **Responsive**: Mobile-first responsive design
-
-### Devise Views
-
-- **Professional Design**: Matches modern authentication UI patterns
-- **Two-Column Layout**: Image placeholder with form on desktop
-- **Complete Views**: All Devise views including confirmations, passwords, registrations
-- **Dark Mode**: Toggle between light and dark themes
-- **Accessible**: ARIA labels and semantic HTML
+```bash
+rake basecoat:install:pagy
+```
 
 ## Requirements
 
@@ -168,12 +88,6 @@ The authentication views include:
 - Basecoat CSS
 - Turbo Rails (for scaffold templates)
 - Stimulus (for the theme toggle, can be moved to something else if you desire...)
-
-## How It Works
-
-The gem uses Rails' template resolution system to provide scaffold templates automatically. When you run `rails generate scaffold`, Rails will use the templates from the Basecoat gem instead of the default ones.
-
-The application layout and partials are copied to your application so you can customize them as needed.
 
 ## Discussion
 
@@ -186,9 +100,16 @@ to have a (responsive) table in the index.
 Also, the arguably ugliest part of the views are the svg tags which contains the lovely lucide icons. 
 Since these icons are the default for shadcn I'm considering including https://github.com/heyvito/lucide-rails to clean up the views. 
 
+## Issues
+
+* The javascript included by basecoat needs some improvement. It's not automatically initialized on turbo:load
+* We include extra css for the definition list. Hopefully this will be part of basecoat-css someday.
+* Rails adds class="field_with_errors", so we need extra css for this. I hope Rails will at some point have aria-invalid="true" on the input, which will automatically include the correct styling.
+* Can the views even be prettier? Probably! I'm more than happy to discuss improvements:
+
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub.
+Bug reports and pull requests are more than welcome on GitHub!
 
 ## License
 
