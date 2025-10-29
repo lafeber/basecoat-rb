@@ -97,25 +97,22 @@ rake basecoat:install:pagy
 - Rails 8.0+
 - Tailwind CSS ([installation instructions](https://github.com/rails/tailwindcss-rails))
 - Basecoat CSS
-- Turbo Rails (for scaffold templates)
 - Stimulus (for the theme toggle, can be moved to something else if you desire...)
 
 ## Discussion
 
-I tried not to be too opinionated with my scaffolds - they're very close to the original ones. With the exception of 
-using a turbo frame main_content. I love this too much not to include it.
+The scaffolds are more opinionated than the default - it includes a main turbo frame. 
+I also strongly feel that the index should not reuse the partial used in show - it defeats the purpose of the show page.
+A responsive table was the best I could come up with - closer to the OG scaffolds before Hotwire.
 
-However, I have my doubts with the index page reusing the show partial. Especially in admin applications you might want 
-to have a (responsive) table in the index.
-
-Also, the arguably ugliest part of the views are the svg tags which contains the lovely lucide icons. 
+Also, the (arguably) most messy part of the views are the svg tags which contain the lovely lucide icons. 
 Since these icons are the default for shadcn I'm considering including https://github.com/heyvito/lucide-rails to clean up the views. 
 
 ## Issues
 
-* The javascript included by basecoat needs some improvement. It's not automatically initialized on turbo:load
+* The javascript included by basecoat needs some improvement. It's not automatically initialized on turbo:load - included is a hack that I hope is temporary.
 * We include extra css for the definition list. Hopefully this will be part of basecoat-css someday.
-* Rails adds class="field_with_errors", so we need extra css for this. I hope Rails will at some point have aria-invalid="true" on the input, which will automatically include the correct styling.
+* Rails adds class="field_with_errors", so we need extra css for this. I hope Rails will at some point have aria-invalid="true" on the input, basecoat will apply the correct styling.
 * Can the views even be prettier? Probably! I'm more than happy to discuss improvements:
 
 ## Contributing
