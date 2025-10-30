@@ -236,7 +236,7 @@ namespace :basecoat do
                   </div>
                 <% end %>
           HTML
-          updated_content = header_content.sub("<!-- DEVISE_USER_DROPDOWN -->", user_dropdown)
+          updated_content = header_content.sub("<!-- AUTHENTICATION_DROPDOWN -->", user_dropdown)
           File.write(header_path, updated_content)
           puts "  Added: User dropdown to app/views/layouts/_header.html.erb"
         end
@@ -314,6 +314,37 @@ namespace :basecoat do
           updated_content = content.sub(/(class PasswordsController < ApplicationController\n)/, "\\1  layout \"sessions\"\n\n")
           File.write(passwords_controller, updated_content)
           puts "  Added layout to: app/controllers/passwords_controller.rb"
+        end
+      end
+
+      # Add user dropdown to header partial
+      header_path = Rails.root.join("app/views/layouts/_header.html.erb")
+      if File.exist?(header_path)
+        header_content = File.read(header_path)
+        unless header_content.include?("dropdown-user")
+          user_dropdown = <<~HTML
+
+                <% if defined?(Current) && defined?(Current.user) && Current.user %>
+                  <div id="dropdown-user" class="dropdown-menu">
+                    <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-icon-ghost rounded-full size-8">
+                      <img alt="<%= Current.user.email_address %>" src="https://github.com/lafeber.png" class="size-8 shrink-0 rounded-full">
+                    </button>
+                    <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
+                      <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
+                        <div class="px-1 py-1.5">
+                          <%= button_to session_path, method: :delete, class: "btn-link" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            Log out
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+          HTML
+          updated_content = header_content.sub("<!-- AUTHENTICATION_DROPDOWN -->", user_dropdown)
+          File.write(header_path, updated_content)
+          puts "  Added: User dropdown to app/views/layouts/_header.html.erb"
         end
       end
 
