@@ -65,7 +65,7 @@ namespace :basecoat do
 
           // Re-initialize basecoat-css components after Turbo navigation
           document.addEventListener('turbo:load', () => {
-            document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true, cancelable: false }))
+            window.basecoat.initAll();
           })
 
           // View transitions for turbo frame navigation
