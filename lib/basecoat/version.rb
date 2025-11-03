@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Basecoat
-  VERSION = "1.1.1"
+  VERSION = "1.2.1"
 end
