@@ -179,6 +179,17 @@ namespace :basecoat do
       puts "  Created: app/views/layouts/#{filename}"
     end
 
+    # Copy shared partials
+    shared_source = File.expand_path("../generators/basecoat/templates/shared", __dir__)
+    shared_destination = Rails.root.join("app/views/shared")
+
+    FileUtils.mkdir_p(shared_destination)
+    Dir.glob("#{shared_source}/*").each do |file|
+      filename = File.basename(file)
+      FileUtils.cp(file, shared_destination.join(filename))
+      puts "  Created: app/views/shared/#{filename}"
+    end
+
     # Copy scaffold hook initializer
     initializer_source = File.expand_path("../generators/basecoat/templates/scaffold_hook.rb", __dir__)
     initializer_destination = Rails.root.join("config/initializers/scaffold_hook.rb")
