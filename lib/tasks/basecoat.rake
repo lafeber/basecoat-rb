@@ -32,7 +32,7 @@ namespace :basecoat do
 
       unless importmap_content.include?("basecoat-css")
         File.open(importmap_path, "a") do |f|
-          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.2/dist/js/all.js\""
+          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/js/all.js\""
         end
         puts "  Added: basecoat-css to config/importmap.rb"
       end
