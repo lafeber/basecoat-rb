@@ -45,15 +45,6 @@
   </div>
 
   <%% if @<%= plural_table_name %>.empty? %>
-    <div class="text-center py-12">
-      <div class="mb-4">
-        <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8V4a1 1 0 00-1-1H7a1 1 0 00-1 1v1h10z" />
-        </svg>
-      </div>
-      <h3 class="text-lg font-medium mb-2">No <%= human_name.pluralize.downcase %> yet</h3>
-      <p class="mb-6">Get started by creating your first <%= human_name.downcase %>.</p>
-      <%%= link_to "New <%= human_name.downcase %>", <%= new_helper(type: :path) %>, class: "btn", data: { turbo_action: "advance" } %>
-    </div>
+    <%%= render "shared/empty", resource_name: "<%= human_name.pluralize.downcase %>", new_path: <%= new_helper(type: :path) %> %>
   <%% end %>
 <%% end %>

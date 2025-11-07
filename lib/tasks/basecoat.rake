@@ -65,7 +65,7 @@ namespace :basecoat do
 
           // Re-initialize basecoat-css components after Turbo navigation
           document.addEventListener('turbo:load', () => {
-            document.dispatchEvent(new Event('DOMContentLoaded', { bubbles: true, cancelable: false }))
+            window.basecoat.initAll();
           })
 
           // View transitions for turbo frame navigation
@@ -177,6 +177,17 @@ namespace :basecoat do
       next if filename == "_head.html.erb" # Skip _head.html.erb, we already created it
       FileUtils.cp(file, partials_destination.join(filename))
       puts "  Created: app/views/layouts/#{filename}"
+    end
+
+    # Copy shared partials
+    shared_source = File.expand_path("../generators/basecoat/templates/shared", __dir__)
+    shared_destination = Rails.root.join("app/views/shared")
+
+    FileUtils.mkdir_p(shared_destination)
+    Dir.glob("#{shared_source}/*").each do |file|
+      filename = File.basename(file)
+      FileUtils.cp(file, shared_destination.join(filename))
+      puts "  Created: app/views/shared/#{filename}"
     end
 
     # Copy scaffold hook initializer
