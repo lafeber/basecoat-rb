@@ -3,13 +3,13 @@
 
 <% attributes.each do |attribute| -%>
 <% required = attribute.to_s.include?('{null}') -%>
-  <div class="grid gap-3">
+  <div class="field">
 <% if attribute.password_digest? -%>
     <%%= form.label :password, class: "label" %>
     <%%= form.password_field :password, class: "input", required: true %>
   </div>
 
-  <div class="grid gap-3">
+  <div class="field">
     <%%= form.label :password_confirmation, class: "label" %>
     <%%= form.password_field :password_confirmation, class: "input", required: true %>
 <% elsif attribute.attachments? -%>
