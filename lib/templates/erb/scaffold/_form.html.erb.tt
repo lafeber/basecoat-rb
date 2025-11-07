@@ -1,4 +1,4 @@
-<%%= form_with(model: <%= model_resource_name %>, class: "space-y-6") do |form| %>
+<%%= form_with(model: <%= model_resource_name %>, class: "space-y-4") do |form| %>
   <%%= render "/layouts/form_errors", object: <%= singular_table_name %> if <%= singular_table_name %>.errors.any? %>
 
 <% attributes.each do |attribute| -%>
