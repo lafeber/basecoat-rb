@@ -6,7 +6,7 @@
         <p>Sign in to your account to continue.</p>
       </header>
       <section class="space-y-4">
-        <%= form_with url: session_url, html: { class: "grid gap-6" } do |form| %>
+        <%= form_with url: session_url, html: { data: { turbo: false }, class: "grid gap-6" } do |form| %>
           <div class="grid gap-3">
             <%= form.label :email_address, "Email", class: "label" %>
             <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address], class: "input" %>
