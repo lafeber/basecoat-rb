@@ -32,7 +32,7 @@ namespace :basecoat do
 
       unless importmap_content.include?("basecoat-css")
         File.open(importmap_path, "a") do |f|
-          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.2/dist/js/all.js\""
+          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/js/all.js\""
         end
         puts "  Added: basecoat-css to config/importmap.rb"
       end
@@ -58,16 +58,10 @@ namespace :basecoat do
         puts "  Added: basecoat-css import to app/javascript/application.js"
       end
 
-      # Add basecoat helper JavaScript directly to application.js
+      # Add cool view transition to application.js
       js_content = File.read(js_path)
       unless js_content.include?("Re-initialize basecoat-css components")
         basecoat_js = <<~JS
-
-          // Re-initialize basecoat-css components after Turbo navigation
-          document.addEventListener('turbo:load', () => {
-            window.basecoat.initAll();
-          })
-
           // View transitions for turbo frame navigation
           addEventListener("turbo:before-frame-render", (event) => {
               if (document.startViewTransition) {
@@ -80,7 +74,7 @@ namespace :basecoat do
           })
         JS
         File.open(js_path, "a") { |f| f.write(basecoat_js) }
-        puts "  Added: Basecoat helper JavaScript to app/javascript/application.js"
+        puts "  Added: cool view transition to app/javascript/application.js"
       end
 
       # Copy theme_controller.js
