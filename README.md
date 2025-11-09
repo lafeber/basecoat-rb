@@ -10,38 +10,36 @@ Beautiful responsive, dark & light mode Rails scaffolds, pages for authenticatio
 
 ![Basecoat Index](basecoat-new.png)
 
+## Usage
+
+From scratch:
+
+    rails new myproject -c tailwind
+    cd myproject
+    bundle add basecoat
+    rails basecoat:install
+    rails g scaffold Post title:string! description:text posted_at:datetime active:boolean rating:integer 
+    rails db:migrate
+    ./bin/dev
+    # visit http://localhost:3000/posts
+
+**Note:** Basecoat requires Tailwind CSS. If you haven't installed it yet, follow the instructions at [https://github.com/rails/tailwindcss-rails](https://github.com/rails/tailwindcss-rails) to set up Tailwind CSS in your Rails application.
+
 ## Why?
+
+The default scaffolds are ugly. There's no styling, no turbo frames - it doesn't represent the best practices.
+It's missing the WOW factor.
 
 Shadcn has quickly become the default ui for the web. However, sometimes we don't _really_ need all the React components.
 Especially with backend applications - where Rails shines as full stack solution.
 
-This is where basecoat-ui comes in. The reason why I love basecoat is because it combines tailwind with clean css classes (like daisy-ui). 
+This is where basecoat-ui comes in. The reason why I love basecoat is because it combines tailwind with clean css classes (like daisy-ui).
 
 If you need more complex components; enrich the views with https://railsblocks.com/ or https://shadcn.rails-components.com/ or just the shadcn React components themselves.
 
-## Installation
+### Rake tasks
 
-Add this line to your application's Gemfile in the development group:
-
-```ruby
-gem 'basecoat'
-```
-
-And then execute:
-
-```bash
-bundle install
-```
-
-**Note:** Basecoat requires Tailwind CSS. If you haven't installed it yet, follow the instructions at [https://github.com/rails/tailwindcss-rails](https://github.com/rails/tailwindcss-rails) to set up Tailwind CSS in your Rails application.
-
-## Usage
-
-Run the rake tasks, run a scaffold and observe beauty.
-
-### Install Application Layout
-
-Install the Basecoat application layout and partials:
+#### Layout
 
 ```bash
 rake basecoat:install
@@ -51,38 +49,32 @@ NB: This could overwrite exising files!
 The generated views will include:
 *  Basecoat CSS styling
 *  Turbo Frame support for SPA-like navigation
-*  View transitions
+*  A tiny bit of javascript for awesome view transitions
 *  Responsive design
 *  Dark mode support
 *  Form validation with required fields
 *  Boolean fields styled as switches
 *  Automatic sidebar navigation links
 
-The scaffold templates are automatically available from the gem, so you can immediately generate scaffolds:
+The scaffold templates are automatically available from the gem, so you can immediately generate scaffolds.
 
-```bash
-rails generate scaffold Post title:string body:text published:boolean
-```
-
-### Install Devise Views
-
-Install the Basecoat-styled Devise views and layout:
+#### Install the Basecoat-styled Devise views and layout:
 
 ```bash
 rake basecoat:install:devise
 ```
-NB: This will overwrite exising files!
+NB: Run this after installing devise. This will overwrite exising files!
 
-### Install Authentication Views
+#### Install default Rails Authentication Views
 
 Install the Basecoat-styled authentication views (for Rails built-in authentication):
 
 ```bash
 rake basecoat:install:authentication
 ```
-NB: This will overwrite exising files!
+NB: Run this *after* `rails generate:authentication`. This will overwrite exising files!
 
-### Install Pagy Pagination Styles
+#### Install Pagy Pagination Styles
 
 Install the Basecoat-styled Pagy pagination:
 
@@ -97,19 +89,9 @@ rake basecoat:install:pagy
 - Basecoat CSS
 - Stimulus (for the theme toggle, can be moved to something else if you desire...)
 
-## Discussion
-
-The scaffolds are more opinionated than the default - it includes a main turbo frame. 
-I also strongly feel that the index should not reuse the partial used in show - it defeats the purpose of the show page.
-A responsive table was the best I could come up with - closer to the OG scaffolds before Hotwire.
-
-Also, the (arguably) most messy part of the views are the svg tags which contain the lovely lucide icons. 
-Since these icons are the default for shadcn I'm considering including https://github.com/heyvito/lucide-rails to clean up the views. 
-
 ## Issues
 
-* The javascript included by basecoat needs some improvement. It's not automatically initialized on turbo:load - included is a hack that I hope is temporary.
-* We include extra css for the definition list. Hopefully this will be part of basecoat-css someday.
+* We include extra css for the definition list. Ideally I would pick an existing component.
 * Rails adds class="field_with_errors", so we need extra css for this. I hope Rails will at some point have aria-invalid="true" on the input, basecoat will apply the correct styling.
 * Can the views even be prettier? Probably! I'm more than happy to discuss improvements:
 
