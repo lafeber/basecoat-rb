@@ -5,12 +5,10 @@ It is especially powerful for admin applications with a lot of CRUD actions.
 
 Beautiful responsive, dark & light mode Rails scaffolds, pages for authentication and Devise, and pagy styling.
 
-Login:
+
 ![Basecoat Login](basecoat-login.png)
-Index:
-![Basecoat Index](basecoat-index.png)
-Form, mobile dark mode:
-![Basecoat Dark Form](basecoat-dark-form.png)
+
+![Basecoat Index](basecoat-new.png)
 
 ## Why?
 
