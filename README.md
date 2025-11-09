@@ -39,12 +39,12 @@ If you need more complex components; enrich the views with https://railsblocks.c
 
 ### Rake tasks
 
-#### Layout
+#### Layout (required)
 
 ```bash
 rake basecoat:install
 ```
-NB: This could overwrite exising files!
+NB: This will overwrite exising files!
 
 The generated views will include:
 *  Basecoat CSS styling
@@ -58,21 +58,28 @@ The generated views will include:
 
 The scaffold templates are automatically available from the gem, so you can immediately generate scaffolds.
 
+#### Default Rails Authentication
+
+Install the Basecoat-styled authentication views (for Rails built-in authentication):
+    
+    rails generate:authentication
+    rails db:migrate
+    rake basecoat:install:authentication
+
+NB: To create a user, go to your console:
+    
+    rails console
+    User.create(email_address: "email@example.com", password: "basecoat")
+    exit
+
 #### Install the Basecoat-styled Devise views and layout:
+
+First install devise, follow the instructions at https://github.com/heartcombo/devise. Then:
 
 ```bash
 rake basecoat:install:devise
 ```
-NB: Run this after installing devise. This will overwrite exising files!
-
-#### Install default Rails Authentication Views
-
-Install the Basecoat-styled authentication views (for Rails built-in authentication):
-
-```bash
-rake basecoat:install:authentication
-```
-NB: Run this *after* `rails generate:authentication`. This will overwrite exising files!
+NB: This will overwrite exising files!
 
 #### Install Pagy Pagination Styles
 
