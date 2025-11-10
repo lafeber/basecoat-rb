@@ -1,8 +1,27 @@
 require 'fileutils'
 
 namespace :basecoat do
+  # Helper method to prompt for overwrite confirmation
+  def prompt_overwrite(file_path, overwrite_all)
+    return true if overwrite_all[:value]
+    return true unless File.exist?(file_path)
+
+    print "  Overwrite #{file_path.relative_path_from(Rails.root)}? [y/n/a] "
+    response = STDIN.gets.chomp.downcase
+
+    if response == 'a'
+      overwrite_all[:value] = true
+      true
+    elsif response == 'y'
+      true
+    else
+      false
+    end
+  end
+
   desc "Install Basecoat application layout and partials"
   task :install do
+    overwrite_all = { value: false }
     # Install basecoat-css (detect package manager)
     puts "\n📦 Installing basecoat-css..."
 
@@ -82,8 +101,12 @@ namespace :basecoat do
       theme_controller_destination = Rails.root.join("app/javascript/controllers/theme_controller.js")
 
       FileUtils.mkdir_p(File.dirname(theme_controller_destination))
-      FileUtils.cp(theme_controller_source, theme_controller_destination)
-      puts "  Created: app/javascript/controllers/theme_controller.js"
+      if prompt_overwrite(theme_controller_destination, overwrite_all)
+        FileUtils.cp(theme_controller_source, theme_controller_destination)
+        puts "  Created: app/javascript/controllers/theme_controller.js"
+      else
+        puts "  Skipped: app/javascript/controllers/theme_controller.js"
+      end
     end
 
     # Add CSS imports and styles
@@ -149,30 +172,53 @@ label:has(+ input:user-invalid), .field_with_errors label {
       if content =~ /(<head>.*?<\/head>)/m
         head_content = $1
         head_destination = partials_destination.join("_head.html.erb")
-        File.write(head_destination, head_content + "\n")
-        puts "  Created: app/views/layouts/_head.html.erb (extracted from existing application.html.erb)"
+        if prompt_overwrite(head_destination, overwrite_all)
+          File.write(head_destination, head_content + "\n")
+          puts "  Created: app/views/layouts/_head.html.erb (extracted from existing application.html.erb)"
+        else
+          puts "  Skipped: app/views/layouts/_head.html.erb"
+        end
       else
         # Fallback: copy the template if no <head> found in existing layout
-        FileUtils.cp("#{partials_source}/_head.html.erb", partials_destination.join("_head.html.erb"))
-        puts "  Created: app/views/layouts/_head.html.erb (from template)"
+        head_destination = partials_destination.join("_head.html.erb")
+        if prompt_overwrite(head_destination, overwrite_all)
+          FileUtils.cp("#{partials_source}/_head.html.erb", head_destination)
+          puts "  Created: app/views/layouts/_head.html.erb (from template)"
+        else
+          puts "  Skipped: app/views/layouts/_head.html.erb"
+        end
       end
     else
       # No existing layout, use template
-      FileUtils.cp("#{partials_source}/_head.html.erb", partials_destination.join("_head.html.erb"))
-      puts "  Created: app/views/layouts/_head.html.erb (from template)"
+      head_destination = partials_destination.join("_head.html.erb")
+      if prompt_overwrite(head_destination, overwrite_all)
+        FileUtils.cp("#{partials_source}/_head.html.erb", head_destination)
+        puts "  Created: app/views/layouts/_head.html.erb (from template)"
+      else
+        puts "  Skipped: app/views/layouts/_head.html.erb"
+      end
     end
 
     # Copy application layout
     layout_source = File.expand_path("../generators/basecoat/templates/application.html.erb", __dir__)
-    FileUtils.cp(layout_source, layout_destination)
-    puts "  Created: app/views/layouts/application.html.erb"
+    if prompt_overwrite(layout_destination, overwrite_all)
+      FileUtils.cp(layout_source, layout_destination)
+      puts "  Created: app/views/layouts/application.html.erb"
+    else
+      puts "  Skipped: app/views/layouts/application.html.erb"
+    end
 
     # Copy layout partials (except _head.html.erb which we already handled)
     Dir.glob("#{partials_source}/*").each do |file|
       filename = File.basename(file)
       next if filename == "_head.html.erb" # Skip _head.html.erb, we already created it
-      FileUtils.cp(file, partials_destination.join(filename))
-      puts "  Created: app/views/layouts/#{filename}"
+      destination = partials_destination.join(filename)
+      if prompt_overwrite(destination, overwrite_all)
+        FileUtils.cp(file, destination)
+        puts "  Created: app/views/layouts/#{filename}"
+      else
+        puts "  Skipped: app/views/layouts/#{filename}"
+      end
     end
 
     # Copy shared partials
@@ -182,8 +228,13 @@ label:has(+ input:user-invalid), .field_with_errors label {
     FileUtils.mkdir_p(shared_destination)
     Dir.glob("#{shared_source}/*").each do |file|
       filename = File.basename(file)
-      FileUtils.cp(file, shared_destination.join(filename))
-      puts "  Created: app/views/shared/#{filename}"
+      destination = shared_destination.join(filename)
+      if prompt_overwrite(destination, overwrite_all)
+        FileUtils.cp(file, destination)
+        puts "  Created: app/views/shared/#{filename}"
+      else
+        puts "  Skipped: app/views/shared/#{filename}"
+      end
     end
 
     # Copy scaffold hook initializer
@@ -191,8 +242,12 @@ label:has(+ input:user-invalid), .field_with_errors label {
     initializer_destination = Rails.root.join("config/initializers/scaffold_hook.rb")
 
     FileUtils.mkdir_p(File.dirname(initializer_destination))
-    FileUtils.cp(initializer_source, initializer_destination)
-    puts "  Created: config/initializers/scaffold_hook.rb"
+    if prompt_overwrite(initializer_destination, overwrite_all)
+      FileUtils.cp(initializer_source, initializer_destination)
+      puts "  Created: config/initializers/scaffold_hook.rb"
+    else
+      puts "  Skipped: config/initializers/scaffold_hook.rb"
+    end
 
     puts "\n✓ Basecoat installed successfully!"
     puts "  Scaffold templates are automatically available from the gem."
@@ -202,21 +257,37 @@ label:has(+ input:user-invalid), .field_with_errors label {
   namespace :install do
     desc "Install Basecoat Devise views and layout"
     task :devise do
+      overwrite_all = { value: false }
+
       # Copy devise views
       devise_source = File.expand_path("../generators/basecoat/templates/devise", __dir__)
       devise_destination = Rails.root.join("app/views/devise")
 
       FileUtils.mkdir_p(devise_destination)
-      FileUtils.cp_r("#{devise_source}/.", devise_destination)
-      puts "  Created: app/views/devise/"
+      Dir.glob("#{devise_source}/**/*").each do |file|
+        next if File.directory?(file)
+        relative_path = Pathname.new(file).relative_path_from(Pathname.new(devise_source))
+        destination = devise_destination.join(relative_path)
+        FileUtils.mkdir_p(File.dirname(destination))
+        if prompt_overwrite(destination, overwrite_all)
+          FileUtils.cp(file, destination)
+          puts "  Created: app/views/devise/#{relative_path}"
+        else
+          puts "  Skipped: app/views/devise/#{relative_path}"
+        end
+      end
 
       # Copy devise layout
       layout_source = File.expand_path("../generators/basecoat/templates/devise.html.erb", __dir__)
       layout_destination = Rails.root.join("app/views/layouts/devise.html.erb")
 
       FileUtils.mkdir_p(File.dirname(layout_destination))
-      FileUtils.cp(layout_source, layout_destination)
-      puts "  Created: app/views/layouts/devise.html.erb"
+      if prompt_overwrite(layout_destination, overwrite_all)
+        FileUtils.cp(layout_source, layout_destination)
+        puts "  Created: app/views/layouts/devise.html.erb"
+      else
+        puts "  Skipped: app/views/layouts/devise.html.erb"
+      end
 
       # Add user dropdown to header partial
       header_path = Rails.root.join("app/views/layouts/_header.html.erb")
@@ -255,6 +326,7 @@ label:has(+ input:user-invalid), .field_with_errors label {
 
     desc "Install Basecoat Pagy pagination styles"
     task :pagy do
+      overwrite_all = { value: false }
       pagy_source = File.expand_path("../generators/basecoat/templates/pagy.scss", __dir__)
 
       # Check if using Tailwind v4 setup (app/assets/tailwind)
@@ -262,8 +334,12 @@ label:has(+ input:user-invalid), .field_with_errors label {
         # Copy pagy styles to tailwind directory
         pagy_destination = Rails.root.join("app/assets/tailwind/pagy.scss")
         FileUtils.mkdir_p(File.dirname(pagy_destination))
-        FileUtils.cp(pagy_source, pagy_destination)
-        puts "  Created: app/assets/tailwind/pagy.scss"
+        if prompt_overwrite(pagy_destination, overwrite_all)
+          FileUtils.cp(pagy_source, pagy_destination)
+          puts "  Created: app/assets/tailwind/pagy.scss"
+        else
+          puts "  Skipped: app/assets/tailwind/pagy.scss"
+        end
 
         # Add import to tailwind application.css
         tailwind_css = Rails.root.join("app/assets/tailwind/application.css")
@@ -278,8 +354,12 @@ label:has(+ input:user-invalid), .field_with_errors label {
         # Copy pagy styles to stylesheets directory
         pagy_destination = Rails.root.join("app/assets/stylesheets/pagy.scss")
         FileUtils.mkdir_p(File.dirname(pagy_destination))
-        FileUtils.cp(pagy_source, pagy_destination)
-        puts "  Created: app/assets/stylesheets/pagy.scss"
+        if prompt_overwrite(pagy_destination, overwrite_all)
+          FileUtils.cp(pagy_source, pagy_destination)
+          puts "  Created: app/assets/stylesheets/pagy.scss"
+        else
+          puts "  Skipped: app/assets/stylesheets/pagy.scss"
+        end
       end
 
       puts "\n✓ Basecoat Pagy styles installed successfully!"
@@ -288,29 +368,55 @@ label:has(+ input:user-invalid), .field_with_errors label {
 
     desc "Install Basecoat authentication views and layout"
     task :authentication do
+      overwrite_all = { value: false }
+
       # Copy sessions views
       sessions_source = File.expand_path("../generators/basecoat/templates/sessions", __dir__)
       sessions_destination = Rails.root.join("app/views/sessions")
 
       FileUtils.mkdir_p(sessions_destination)
-      FileUtils.cp_r("#{sessions_source}/.", sessions_destination)
-      puts "  Created: app/views/sessions/"
+      Dir.glob("#{sessions_source}/**/*").each do |file|
+        next if File.directory?(file)
+        relative_path = Pathname.new(file).relative_path_from(Pathname.new(sessions_source))
+        destination = sessions_destination.join(relative_path)
+        FileUtils.mkdir_p(File.dirname(destination))
+        if prompt_overwrite(destination, overwrite_all)
+          FileUtils.cp(file, destination)
+          puts "  Created: app/views/sessions/#{relative_path}"
+        else
+          puts "  Skipped: app/views/sessions/#{relative_path}"
+        end
+      end
 
       # Copy passwords views
       passwords_source = File.expand_path("../generators/basecoat/templates/passwords", __dir__)
       passwords_destination = Rails.root.join("app/views/passwords")
 
       FileUtils.mkdir_p(passwords_destination)
-      FileUtils.cp_r("#{passwords_source}/.", passwords_destination)
-      puts "  Created: app/views/passwords/"
+      Dir.glob("#{passwords_source}/**/*").each do |file|
+        next if File.directory?(file)
+        relative_path = Pathname.new(file).relative_path_from(Pathname.new(passwords_source))
+        destination = passwords_destination.join(relative_path)
+        FileUtils.mkdir_p(File.dirname(destination))
+        if prompt_overwrite(destination, overwrite_all)
+          FileUtils.cp(file, destination)
+          puts "  Created: app/views/passwords/#{relative_path}"
+        else
+          puts "  Skipped: app/views/passwords/#{relative_path}"
+        end
+      end
 
       # Copy sessions layout
       layout_source = File.expand_path("../generators/basecoat/templates/sessions.html.erb", __dir__)
       layout_destination = Rails.root.join("app/views/layouts/sessions.html.erb")
 
       FileUtils.mkdir_p(File.dirname(layout_destination))
-      FileUtils.cp(layout_source, layout_destination)
-      puts "  Created: app/views/layouts/sessions.html.erb"
+      if prompt_overwrite(layout_destination, overwrite_all)
+        FileUtils.cp(layout_source, layout_destination)
+        puts "  Created: app/views/layouts/sessions.html.erb"
+      else
+        puts "  Skipped: app/views/layouts/sessions.html.erb"
+      end
 
       # Add layout to passwords_controller
       passwords_controller = Rails.root.join("app/controllers/passwords_controller.rb")
