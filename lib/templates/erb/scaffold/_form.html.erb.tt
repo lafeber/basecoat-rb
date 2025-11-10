@@ -23,12 +23,15 @@
       <%%= form.check_box :<%= attribute.column_name %>, class: "input", role: "switch" %>
       <%= attribute.human_name %>
     <%% end %>
-<% elsif attribute.field_type == :datetime_local_field || attribute.field_type == :date_field || attribute.field_type == :time_field -%>
+<% elsif %w[url permalink website].include? attribute.column_name -%>
     <%%= form.label :<%= attribute.column_name %>, class: "label" %>
-    <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, class: "input"<%= ", required: true" if required %> %>
-<% elsif attribute.field_type == :number_field -%>
+      <%%= form.url_field :<%= attribute.column_name %>, class: "input"<%= ", required: true" if required %> %>
+<% elsif %w[email email_address].include? attribute.column_name -%>
     <%%= form.label :<%= attribute.column_name %>, class: "label" %>
-    <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, class: "input"<%= ", required: true" if required %> %>
+    <%%= form.email_field :<%= attribute.column_name %>, class: "input"<%= ", required: true" if required %> %>
+<% elsif %w[phone phone_number].include? attribute.column_name -%>
+    <%%= form.label :<%= attribute.column_name %>, class: "label" %>
+    <%%= form.phone_field :<%= attribute.column_name %>, maxLength: 16, pattern: "[0-9\+\\-\\(\\)\s]*", class: "input"<%= ", required: true" if required %> %>
 <% else -%>
     <%%= form.label :<%= attribute.column_name %>, class: "label" %>
     <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, class: "input"<%= ", required: true" if required %> %>
