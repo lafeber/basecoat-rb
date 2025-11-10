@@ -112,23 +112,25 @@ namespace :basecoat do
       css_content = File.read(css_path)
 
       css_code = <<~CSS
-        .field_with_errors {
-            label {
-                color: var(--color-destructive);
-            }
-        
-            input {
-                border-color: var(--color-destructive);
-            }
-        }
+dl {
+    font-size: var(--text-sm);
+    dt {
+        font-weight: var(--font-weight-bold);
+        margin-top: calc(var(--spacing)*4);
+    }
+}
 
-        dl {
-            font-size: var(--text-sm);
-            dt {
-                font-weight: var(--font-weight-bold);
-                margin-top: calc(var(--spacing)*4);
-            }
-        }
+label:has(+ input:required):after {
+    content: " *"
+}
+
+input:user-invalid, .field_with_errors input {
+    border-color: var(--color-destructive);
+}
+
+label:has(+ input:user-invalid), .field_with_errors label {
+    color: var(--color-destructive);
+}
       CSS
       File.open(css_path, "a") { |f| f.write(css_code) }
       puts "  Added: basic styles to #{css_path.relative_path_from(Rails.root)}"
