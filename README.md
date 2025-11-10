@@ -3,16 +3,13 @@
 This gem provides you with amazing layouts, scaffolds, views and partials based on [Basecoat UI](https://basecoatui.com).
 It is especially powerful for admin applications with a lot of CRUD actions.
 
-Beautiful responsive, dark & light mode Rails scaffolds, pages for authentication and Devise, and pagy styling.
-
-
 ![Basecoat Login](basecoat-login.png)
 
-![Basecoat Index](basecoat-new.png)
+![Basecoat Form](basecoat-new.png)
 
 ## Usage
 
-From scratch:
+Try it from scratch:
 
     rails new myproject -c tailwind
     cd myproject
@@ -21,30 +18,26 @@ From scratch:
     rails g scaffold Post title:string! description:text posted_at:datetime active:boolean rating:integer 
     rails db:migrate
     ./bin/dev
-    # visit http://localhost:3000/posts
+    # open http://localhost:3000/posts
 
 **Note:** Basecoat requires Tailwind CSS. If you haven't installed it yet, follow the instructions at [https://github.com/rails/tailwindcss-rails](https://github.com/rails/tailwindcss-rails) to set up Tailwind CSS in your Rails application.
 
 ## Why?
 
-The default scaffolds are ugly. There's no styling, no turbo frames - it doesn't represent the best practices.
-It's missing the WOW factor.
+The default scaffolds are ugly. There's no styling, no turbo frames - it's missing the WOW factor.
 
-Shadcn has quickly become the default ui for the web. However, sometimes we don't _really_ need all the React components.
-Especially with backend applications - where Rails shines as full stack solution.
-
-This is where basecoat-ui comes in. The reason why I love basecoat is because it combines tailwind with clean css classes (like daisy-ui).
+Basecoat CSS combines tailwind with clean css classes. It creates the looks of shadcn, which has a massive community.
 
 If you need more complex components; enrich the views with https://railsblocks.com/ or https://shadcn.rails-components.com/ or just the shadcn React components themselves.
 
-### Rake tasks
+## Rake tasks
 
-#### Layout (required)
+### Layout (required)
 
 ```bash
 rake basecoat:install
 ```
-NB: This will overwrite exising files!
+NB: Only run this once.
 
 The generated views will include:
 *  Basecoat CSS styling
@@ -58,7 +51,7 @@ The generated views will include:
 
 The scaffold templates are automatically available from the gem, so you can immediately generate scaffolds.
 
-#### Default Rails Authentication
+### Default Rails Authentication
 
 Install the Basecoat-styled authentication views (for Rails built-in authentication):
     
@@ -72,16 +65,15 @@ NB: To create a user, go to your console:
     User.create(email_address: "email@example.com", password: "basecoat")
     exit
 
-#### Install the Basecoat-styled Devise views and layout:
+### Install the Basecoat-styled Devise views and layout:
 
 First install devise, follow the instructions at https://github.com/heartcombo/devise. Then:
 
 ```bash
 rake basecoat:install:devise
 ```
-NB: This will overwrite exising files!
 
-#### Install Pagy Pagination Styles
+### Install Pagy Pagination Styles
 
 Install the Basecoat-styled Pagy pagination:
 
