@@ -21,12 +21,13 @@ namespace :basecoat do
 
   desc "Install Basecoat application layout and partials"
   task :install do
+    no_package_manager = false
     overwrite_all = { value: false }
     # Install basecoat-css (detect package manager)
     puts "\n📦 Installing basecoat-css..."
 
     # Detect package manager
-    if File.exist?(Rails.root.join("bun.lockb"))
+    if File.exist?(Rails.root.join("bun.lock"))
       system("bun add basecoat-css")
       puts "  Installed: basecoat-css via bun"
     elsif File.exist?(Rails.root.join("yarn.lock"))
@@ -39,20 +40,8 @@ namespace :basecoat do
       system("pnpm add basecoat-css")
       puts "  Installed: basecoat-css via pnpm"
     else
-      puts "  No package manager detected, trying CDN fallback"
-
-      # Insert CDN link into _head.html.erb if it exists
-      head_path = Rails.root.join("app/views/layouts/_head.html.erb")
-      if File.exist?(head_path)
-        head_content = File.read(head_path)
-        unless head_content.include?("basecoat.cdn.min.css")
-          cdn_link = '  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/basecoat.cdn.min.css">'
-          # Insert before the closing </head> tag
-          updated_content = head_content.sub(/(<\/head>)/, "#{cdn_link}\n\\1")
-          File.write(head_path, updated_content)
-          puts "  Added: CDN link to app/views/layouts/_head.html.erb"
-        end
-      end
+      no_package_manager = true
+      puts "  No package manager detected! We'll insert CDN links into _head.html.erb..."
     end
 
     # If using importmap, also add to importmap.rb for JS
@@ -139,25 +128,25 @@ namespace :basecoat do
       css_content = File.read(css_path)
 
       css_code = <<~CSS
-dl {
-    font-size: var(--text-sm);
-    dt {
-        font-weight: var(--font-weight-bold);
-        margin-top: calc(var(--spacing)*4);
-    }
-}
+        dl {
+            font-size: var(--text-sm);
+            dt {
+                font-weight: var(--font-weight-bold);
+                margin-top: calc(var(--spacing)*4);
+            }
+        }
 
-label:has(+ input:required):after {
-    content: " *"
-}
+        label:has(+ input:required):after {
+            content: " *"
+        }
 
-input:user-invalid, .field_with_errors input {
-    border-color: var(--color-destructive);
-}
+        input:user-invalid, .field_with_errors input {
+            border-color: var(--color-destructive);
+        }
 
-label:has(+ input:user-invalid), .field_with_errors label {
-    color: var(--color-destructive);
-}
+        label:has(+ input:user-invalid), .field_with_errors label {
+            color: var(--color-destructive);
+        }
       CSS
       File.open(css_path, "a") { |f| f.write(css_code) }
       puts "  Added: basic styles to #{css_path.relative_path_from(Rails.root)}"
@@ -241,6 +230,21 @@ label:has(+ input:user-invalid), .field_with_errors label {
       end
     end
 
+    if no_package_manager
+      head_path = Rails.root.join("app/views/layouts/_head.html.erb")
+      if File.exist?(head_path)
+        head_content = File.read(head_path)
+        unless head_content.include?("basecoat.cdn.min.css")
+          cdn_link = '  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/basecoat.cdn.min.css">'
+          # Insert before the closing </head> tag
+          updated_content = head_content.sub(/(<\/head>)/, "#{cdn_link}\n\\1")
+          File.write(head_path, updated_content)
+          puts "  Added: CDN link to app/views/layouts/_head.html.erb"
+        end
+      end
+    end
+
     # Copy scaffold hook initializer
     initializer_source = File.expand_path("../generators/basecoat/templates/scaffold_hook.rb", __dir__)
     initializer_destination = Rails.root.join("config/initializers/scaffold_hook.rb")
@@ -300,23 +304,23 @@ label:has(+ input:user-invalid), .field_with_errors label {
         unless header_content.include?("dropdown-user")
           user_dropdown = <<~HTML
 
-                <% if defined?(user_signed_in?) && user_signed_in? %>
-                  <div id="dropdown-user" class="dropdown-menu">
-                    <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-ghost size-8">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
-                    </button>
-                    <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
-                      <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
-                        <div class="px-1 py-1.5">
-                          <%= button_to destroy_user_session_path, method: :delete, class: "btn-link" do %>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                            Log out
-                          <% end %>
-                        </div>
-                      </div>
+            <% if defined?(user_signed_in?) && user_signed_in? %>
+              <div id="dropdown-user" class="dropdown-menu">
+                <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-ghost size-8">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
+                </button>
+                <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
+                  <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
+                    <div class="px-1 py-1.5">
+                      <%= button_to destroy_user_session_path, method: :delete, class: "btn-link" do %>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Log out
+                      <% end %>
                     </div>
                   </div>
-                <% end %>
+                </div>
+              </div>
+            <% end %>
           HTML
           updated_content = header_content.sub("<!-- AUTHENTICATION_DROPDOWN -->", user_dropdown)
           File.write(header_path, updated_content)
@@ -441,23 +445,23 @@ label:has(+ input:user-invalid), .field_with_errors label {
         unless header_content.include?("dropdown-user")
           user_dropdown = <<~HTML
 
-                <% if defined?(Current) && defined?(Current.user) && Current.user %>
-                  <div id="dropdown-user" class="dropdown-menu">
-                    <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-ghost size-8">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
-                    </button>
-                    <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
-                      <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
-                        <div class="px-1 py-1.5">
-                          <%= button_to session_path, method: :delete, class: "btn-link" do %>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                            Log out
-                          <% end %>
-                        </div>
-                      </div>
+            <% if defined?(Current) && defined?(Current.user) && Current.user %>
+              <div id="dropdown-user" class="dropdown-menu">
+                <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-ghost size-8">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
+                </button>
+                <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
+                  <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
+                    <div class="px-1 py-1.5">
+                      <%= button_to session_path, method: :delete, class: "btn-link" do %>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Log out
+                      <% end %>
                     </div>
                   </div>
-                <% end %>
+                </div>
+              </div>
+            <% end %>
           HTML
           updated_content = header_content.sub("<!-- AUTHENTICATION_DROPDOWN -->", user_dropdown)
           File.write(header_path, updated_content)
