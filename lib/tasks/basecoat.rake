@@ -39,9 +39,20 @@ namespace :basecoat do
       system("pnpm add basecoat-css")
       puts "  Installed: basecoat-css via pnpm"
     else
-      # Fallback: try bun first, then yarn, then npm
-      system("bun add basecoat-css") || system("yarn add basecoat-css") || system("npm install basecoat-css")
-      puts "  Installed: basecoat-css"
+      puts "  No package manager detected, trying CDN fallback"
+
+      # Insert CDN link into _head.html.erb if it exists
+      head_path = Rails.root.join("app/views/layouts/_head.html.erb")
+      if File.exist?(head_path)
+        head_content = File.read(head_path)
+        unless head_content.include?("basecoat.cdn.min.css")
+          cdn_link = '  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/basecoat.cdn.min.css">'
+          # Insert before the closing </head> tag
+          updated_content = head_content.sub(/(<\/head>)/, "#{cdn_link}\n\\1")
+          File.write(head_path, updated_content)
+          puts "  Added: CDN link to app/views/layouts/_head.html.erb"
+        end
+      end
     end
 
     # If using importmap, also add to importmap.rb for JS
@@ -54,13 +65,6 @@ namespace :basecoat do
           f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/js/all.js\""
         end
         puts "  Added: basecoat-css to config/importmap.rb"
-      end
-
-      unless importmap_content.include?("basecoat-helper")
-        File.open(importmap_path, "a") do |f|
-          f.puts "pin \"basecoat-helper\""
-        end
-        puts "  Added: basecoat-helper to config/importmap.rb"
       end
     end
 
