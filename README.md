@@ -30,6 +30,28 @@ Basecoat CSS combines tailwind with clean css classes. It creates the looks of s
 
 If you need more complex components; enrich the views with https://railsblocks.com/ or https://shadcn.rails-components.com/ or just the shadcn React components themselves.
 
+## Form Helpers
+
+Basecoat includes custom form helpers for enhanced UI components:
+
+### Select Component
+
+Use `basecoat_select` in forms or `basecoat_select_tag` outside of forms:
+
+```erb
+<%= form_for @user do |f| %>
+  <%= f.basecoat_select :fruit, [["Apple", 1], ["Pear", 2]] %>
+<% end %>
+
+<%# Or without a form: %>
+<%= basecoat_select_tag "fruit", [["Apple", 1], ["Pear", 2]] %>
+
+<%# With options: %>
+<%= f.basecoat_select :fruit, [["Apple", 1], ["Pear", 2]],
+    group_label: "Fruits",
+    placeholder: "Search fruits..." %>
+```
+
 ## Rake tasks
 
 ### Layout (required)
