@@ -11,6 +11,7 @@ module Basecoat
     initializer "basecoat.form_builder" do
       ActiveSupport.on_load(:action_view) do
         ActionView::Helpers::FormBuilder.include Basecoat::FormBuilder
+        ActionView::Base.include Basecoat::FormHelper
       end
     end
   end
