@@ -8,10 +8,20 @@ module Basecoat
 
       group_label = options[:group_label] || name.to_s.titleize.pluralize
       placeholder = options[:placeholder] || "Search entries..."
+      url = options[:url]
+      scrollable = options[:scrollable] || false
 
-      content_tag(:div, id: select_id, class: "select") do
+      select_attrs = { id: select_id, class: "select" }
+      if url
+        select_attrs[:data] = {
+          controller: "search",
+          search_url_value: url
+        }
+      end
+
+      content_tag(:div, select_attrs) do
         basecoat_select_button(select_id, selected_label) +
-        basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value) +
+        basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value, url, scrollable) +
         tag(:input, type: "hidden", name: name, value: selected_value)
       end
     end
@@ -25,27 +35,48 @@ module Basecoat
       end
     end
 
-    def basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value)
+    def basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value, url, scrollable)
       content_tag(:div, id: "#{select_id}-popover", data: { popover: true }, "aria-hidden": "true") do
         basecoat_select_search_header(select_id, placeholder) +
-        basecoat_select_listbox(select_id, choices, group_label, selected_value)
+        basecoat_select_listbox(select_id, choices, group_label, selected_value, url, scrollable)
       end
     end
 
     def basecoat_select_search_header(select_id, placeholder)
       content_tag(:header) do
         basecoat_select_search_icon +
-        tag(:input, type: "text", value: "", placeholder: placeholder, autocomplete: "off", autocorrect: "off", spellcheck: "false", "aria-autocomplete": "list", role: "combobox", "aria-expanded": "false", "aria-controls": "#{select_id}-listbox", "aria-labelledby": "#{select_id}-trigger")
+        tag(:input, type: "text", value: "", placeholder: placeholder, autocomplete: "off", autocorrect: "off", spellcheck: "false", "aria-autocomplete": "list", role: "combobox", "aria-expanded": "false", "aria-controls": "#{select_id}-listbox", "aria-labelledby": "#{select_id}-trigger", data: { search_target: "input", action: "input->search#search" })
       end
     end
 
-    def basecoat_select_listbox(select_id, choices, group_label, selected_value)
-      content_tag(:div, role: "listbox", id: "#{select_id}-listbox", "aria-orientation": "vertical", "aria-labelledby": "#{select_id}-trigger") do
-        content_tag(:div, role: "group", "aria-labelledby": "group-label-#{select_id}-items-1") do
-          content_tag(:div, group_label, role: "heading", id: "group-label-#{select_id}-items-1") +
-          choices.map.with_index do |(label, value), index|
-            basecoat_select_option(select_id, label, value, index + 1, value.to_s == selected_value.to_s)
-          end.join.html_safe
+    def basecoat_select_listbox(select_id, choices, group_label, selected_value, url, scrollable)
+      listbox_attrs = {
+        role: "listbox",
+        id: "#{select_id}-listbox",
+        "aria-orientation": "vertical",
+        "aria-labelledby": "#{select_id}-trigger"
+      }
+
+      listbox_attrs[:class] = "scrollbar overflow-y-auto max-h-64" if scrollable
+
+      if url
+        turbo_frame_id = url.gsub("/", "_")
+        listbox_attrs[:data] = {
+          controller: "search",
+          search_url_value: url
+        }
+      end
+
+      content_tag(:div, listbox_attrs) do
+        if url
+          turbo_frame_tag(turbo_frame_id)
+        else
+          content_tag(:div, role: "group", "aria-labelledby": "group-label-#{select_id}-items-1") do
+            content_tag(:div, group_label, role: "heading", id: "group-label-#{select_id}-items-1") +
+            choices.map.with_index do |(label, value), index|
+              basecoat_select_option(select_id, label, value, index + 1, value.to_s == selected_value.to_s)
+            end.join.html_safe
+          end
         end
       end
     end

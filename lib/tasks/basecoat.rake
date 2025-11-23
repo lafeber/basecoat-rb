@@ -107,6 +107,18 @@ namespace :basecoat do
       else
         puts "  Skipped: app/javascript/controllers/theme_controller.js"
       end
+
+      # Copy search_controller.js
+      search_controller_source = File.expand_path("../generators/basecoat/templates/search_controller.js", __dir__)
+      search_controller_destination = Rails.root.join("app/javascript/controllers/search_controller.js")
+
+      FileUtils.mkdir_p(File.dirname(search_controller_destination))
+      if prompt_overwrite(search_controller_destination, overwrite_all)
+        FileUtils.cp(search_controller_source, search_controller_destination)
+        puts "  Created: app/javascript/controllers/search_controller.js"
+      else
+        puts "  Skipped: app/javascript/controllers/search_controller.js"
+      end
     end
 
     # Add CSS imports and styles
