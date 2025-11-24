@@ -10,6 +10,7 @@ module Basecoat
       placeholder = options[:placeholder] || "Search entries..."
       url = options[:url]
       scrollable = options[:scrollable] || false
+      turbo_frame = options[:turbo_frame] || (url ? url.gsub("/", "_") : nil)
 
       select_attrs = { id: select_id, class: "select" }
       if url
@@ -21,7 +22,7 @@ module Basecoat
 
       content_tag(:div, select_attrs) do
         basecoat_select_button(select_id, selected_label) +
-        basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value, url, scrollable) +
+        basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value, url, scrollable, turbo_frame) +
         tag(:input, type: "hidden", name: name, value: selected_value)
       end
     end
@@ -35,10 +36,10 @@ module Basecoat
       end
     end
 
-    def basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value, url, scrollable)
+    def basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value, url, scrollable, turbo_frame)
       content_tag(:div, id: "#{select_id}-popover", data: { popover: true }, "aria-hidden": "true") do
         basecoat_select_search_header(select_id, placeholder) +
-        basecoat_select_listbox(select_id, choices, group_label, selected_value, url, scrollable)
+        basecoat_select_listbox(select_id, choices, group_label, selected_value, url, scrollable, turbo_frame)
       end
     end
 
@@ -49,7 +50,7 @@ module Basecoat
       end
     end
 
-    def basecoat_select_listbox(select_id, choices, group_label, selected_value, url, scrollable)
+    def basecoat_select_listbox(select_id, choices, group_label, selected_value, url, scrollable, turbo_frame)
       listbox_attrs = {
         role: "listbox",
         id: "#{select_id}-listbox",
@@ -60,7 +61,6 @@ module Basecoat
       listbox_attrs[:class] = "scrollbar overflow-y-auto max-h-64" if scrollable
 
       if url
-        turbo_frame_id = url.gsub("/", "_")
         listbox_attrs[:data] = {
           controller: "search",
           search_url_value: url
@@ -69,7 +69,7 @@ module Basecoat
 
       content_tag(:div, listbox_attrs) do
         if url
-          turbo_frame_tag(turbo_frame_id)
+          turbo_frame_tag(turbo_frame)
         else
           content_tag(:div, role: "group", "aria-labelledby": "group-label-#{select_id}-items-1") do
             content_tag(:div, group_label, role: "heading", id: "group-label-#{select_id}-items-1") +

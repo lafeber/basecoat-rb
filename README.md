@@ -50,6 +50,22 @@ Use `basecoat_select` in forms or `basecoat_select_tag` outside of forms:
 <%= f.basecoat_select :fruit, [["Apple", 1], ["Pear", 2]],
     group_label: "Fruits",
     placeholder: "Search fruits..." %>
+
+<%# You can add a remote url, which does a turbo call %>
+  <%= f.basecoat_select :fruit, [[]], url: "/fruits/search", turbo_frame: "custom_frame" %>
+
+  `fruits/search.turbo_stream.erb` should then have the following content:
+
+  <%= turbo_stream.update "custom_frame" do %>
+    <% @fruits.each do |fruit| %>
+      <%= content_tag :div, fruit.name, role: "option", data: { value: fruit.id } %>
+    <% end %>
+  <% end %>
+
+# If you don't add the turbo_frame option there's a fallback to underscored URL (_fruits_search)
+<%= f.basecoat_select :fruit, [[]], url: "/fruits/search" %>
+
+Make sure this matches the frame in your partial!
 ```
 
 ## Rake tasks
