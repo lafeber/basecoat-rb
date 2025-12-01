@@ -55,7 +55,7 @@ The scaffold templates are automatically available from the gem, so you can imme
 
 Install the Basecoat-styled authentication views (for Rails built-in authentication):
     
-    rails generate:authentication
+    rails generate authentication
     rails db:migrate
     rake basecoat:install:authentication
 
