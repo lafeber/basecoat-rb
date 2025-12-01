@@ -1,14 +1,86 @@
 module Basecoat
   module FormHelper
+    ##
+    # Renders a remote search component with Turbo Stream support.
+    #
+    # ==== Parameters
+    # * +url+ - The URL to fetch search results from (required)
+    # * +options+ - Hash of optional parameters:
+    #   * +:turbo_frame+ - Custom turbo frame name (defaults to underscored URL)
+    #   * +:placeholder+ - Custom placeholder text (defaults to "Type a command or search...")
+    #   * +:data_empty+ - Message shown when no results found (defaults to "No results found.")
+    #   * +:classes+ - Additional CSS classes to apply to the component
+    #
+    # ==== Examples
+    #   <%= basecoat_remote_search_tag("/posts/search") %>
+    #   <%= basecoat_remote_search_tag("/posts/search", turbo_frame: "custom_frame") %>
+    #   <%= basecoat_remote_search_tag("/posts/search", placeholder: "Search posts...", classes: "rounded-lg border shadow-md") %>
+    def basecoat_remote_search_tag(url, options = {})
+      turbo_frame = options[:turbo_frame] || url.gsub("/", "_")
+      placeholder = options[:placeholder] || "Type a command or search..."
+      data_empty = options[:data_empty] || "No results found."
+      classes = options[:classes] || ""
+      search_id = "search-#{SecureRandom.random_number(1000000)}"
+
+      content_tag(:div, id: search_id, data: { controller: "search", search_url_value: url }, class: "command #{classes}", "aria-label": "Command menu") do
+        content_tag(:header) do
+          basecoat_select_search_icon +
+          tag(:input,
+            type: "search",
+            id: "#{search_id}-input",
+            placeholder: placeholder,
+            autocomplete: "off",
+            autocorrect: "off",
+            spellcheck: "false",
+            "aria-autocomplete": "list",
+            role: "combobox",
+            "aria-expanded": "true",
+            "aria-controls": "#{search_id}-menu",
+            data: {
+              search_target: "input",
+              action: "input->search#search"
+            }
+          )
+        end +
+        content_tag(:div, role: "menu", id: "#{search_id}-menu", "aria-orientation": "vertical", data: { empty: data_empty }, class: "scrollbar") do
+          turbo_frame_tag(turbo_frame)
+        end
+      end
+    end
+
+    ##
+    # Renders a select component outside of a form context.
+    #
+    # ==== Parameters
+    # * +name+ - The name attribute for the hidden input field (required)
+    # * +choices+ - Array of [label, value] pairs for select options (required)
+    # * +options+ - Hash of optional parameters:
+    #   * +:selected+ - The initially selected value (defaults to first choice)
+    #   * +:group_label+ - Label for the option group (defaults to titleized and pluralized name)
+    #   * +:placeholder+ - Placeholder text for the search input (defaults to "Search entries...")
+    #   * +:url+ - URL for remote search via Turbo Stream
+    #   * +:turbo_frame+ - Custom turbo frame name when using +:url+ (defaults to underscored URL)
+    #   * +:scrollable+ - Whether to make the listbox scrollable with max height (defaults to false)
+    #
+    # ==== Examples
+    #   <%= basecoat_select_tag "fruit", [["Apple", 1], ["Pear", 2]] %>
+    #   <%= basecoat_select_tag "fruit", [["Apple", 1], ["Pear", 2]], selected: 2, placeholder: "Search fruits..." %>
+    #   <%= basecoat_select_tag "fruit", [], url: "/fruits/search", turbo_frame: "custom_frame", scrollable: true %>
     def basecoat_select_tag(name, choices, options = {})
       select_id = "select-#{SecureRandom.random_number(1000000)}"
-      selected_value = options[:selected] || choices.first[1]
-      selected_choice = choices.find { |label, val| val.to_s == selected_value.to_s }
-      selected_label = selected_choice ? selected_choice[0] : choices.first[0]
+      url = options[:url]
+
+      if url || choices.empty?
+        selected_value = options[:selected]
+        selected_label = options[:selected_label] || "Select..."
+      else
+        selected_value = options[:selected] || choices.first[1]
+        selected_choice = choices.find { |label, val| val.to_s == selected_value.to_s }
+        selected_label = selected_choice ? selected_choice[0] : choices.first[0]
+      end
 
       group_label = options[:group_label] || name.to_s.titleize.pluralize
       placeholder = options[:placeholder] || "Search entries..."
-      url = options[:url]
       scrollable = options[:scrollable] || false
       turbo_frame = options[:turbo_frame] || (url ? url.gsub("/", "_") : nil)
 

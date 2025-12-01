@@ -58,7 +58,7 @@ Use `basecoat_select` in forms or `basecoat_select_tag` outside of forms:
 
   <%= turbo_stream.update "custom_frame" do %>
     <% @fruits.each do |fruit| %>
-      <%= content_tag :div, fruit.name, role: "option", data: { value: fruit.id } %>
+      <%= tag.div fruit.name, role: "option", data: { value: fruit.id } %>
     <% end %>
   <% end %>
 
@@ -67,6 +67,48 @@ Use `basecoat_select` in forms or `basecoat_select_tag` outside of forms:
 
 Make sure this matches the frame in your partial!
 ```
+
+### Remote Search Component
+
+Use `basecoat_remote_search_tag` for a standalone search component with Turbo Stream support:
+
+```erb
+<%# Basic usage: %>
+<%= basecoat_remote_search_tag("/posts/search") %>
+
+<%# With custom turbo frame name: %>
+<%= basecoat_remote_search_tag("/posts/search", turbo_frame: "custom_frame") %>
+
+<%# With custom placeholder: %>
+<%= basecoat_remote_search_tag("/posts/search", placeholder: "Search posts...") %>
+```
+
+Your controller should respond with a Turbo Stream that updates the frame:
+
+```ruby
+# posts_controller.rb
+def search
+  @posts = Post.where("title LIKE ?", "%#{params[:query]}%")
+
+  respond_to do |format|
+    format.turbo_stream
+  end
+end
+```
+
+```erb
+<%# posts/search.turbo_stream.erb %>
+<%= turbo_stream.update "_posts_search" do %>
+  <% @posts.each do |post| %>
+    <%= link_to post.title, post_path(post), class: "block p-2 hover:bg-muted" %>
+  <% end %>
+<% end %>
+```
+
+Options:
+- `url` (required): The URL to fetch search results from
+- `turbo_frame`: Custom turbo frame name (defaults to underscored URL, e.g., `/posts/search` becomes `_posts_search`)
+- `placeholder`: Custom placeholder text (defaults to "Type a command or search...")
 
 ## Rake tasks
 
