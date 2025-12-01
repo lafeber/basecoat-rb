@@ -51,7 +51,7 @@ namespace :basecoat do
 
       unless importmap_content.include?("basecoat-css")
         File.open(importmap_path, "a") do |f|
-          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/js/all.js\""
+          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.6/dist/js/all.js\""
         end
         puts "  Added: basecoat-css to config/importmap.rb"
       end
@@ -99,6 +99,18 @@ namespace :basecoat do
         puts "  Created: app/javascript/controllers/theme_controller.js"
       else
         puts "  Skipped: app/javascript/controllers/theme_controller.js"
+      end
+
+      # Copy search_controller.js
+      search_controller_source = File.expand_path("../generators/basecoat/templates/search_controller.js", __dir__)
+      search_controller_destination = Rails.root.join("app/javascript/controllers/search_controller.js")
+
+      FileUtils.mkdir_p(File.dirname(search_controller_destination))
+      if prompt_overwrite(search_controller_destination, overwrite_all)
+        FileUtils.cp(search_controller_source, search_controller_destination)
+        puts "  Created: app/javascript/controllers/search_controller.js"
+      else
+        puts "  Skipped: app/javascript/controllers/search_controller.js"
       end
     end
 

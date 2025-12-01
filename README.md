@@ -30,6 +30,86 @@ Basecoat CSS combines tailwind with clean css classes. It creates the looks of s
 
 If you need more complex components; enrich the views with https://railsblocks.com/ or https://shadcn.rails-components.com/ or just the shadcn React components themselves.
 
+## Form Helpers
+
+Basecoat includes custom form helpers for enhanced UI components:
+
+### Select Component
+
+Use `basecoat_select` in forms or `basecoat_select_tag` outside of forms:
+
+```erb
+<%= form_for @user do |f| %>
+  <%= f.basecoat_select :fruit, [["Apple", 1], ["Pear", 2]] %>
+<% end %>
+
+<%# Or without a form: %>
+<%= basecoat_select_tag "fruit", [["Apple", 1], ["Pear", 2]] %>
+
+<%# With options: %>
+<%= f.basecoat_select :fruit, [["Apple", 1], ["Pear", 2]],
+    group_label: "Fruits",
+    placeholder: "Search fruits..." %>
+
+<%# You can add a remote url, which does a turbo call %>
+  <%= f.basecoat_select :fruit, [[]], url: "/fruits/search", turbo_frame: "custom_frame" %>
+
+  `fruits/search.turbo_stream.erb` should then have the following content:
+
+  <%= turbo_stream.update "custom_frame" do %>
+    <% @fruits.each do |fruit| %>
+      <%= tag.div fruit.name, role: "option", data: { value: fruit.id } %>
+    <% end %>
+  <% end %>
+
+# If you don't add the turbo_frame option there's a fallback to underscored URL (_fruits_search)
+<%= f.basecoat_select :fruit, [[]], url: "/fruits/search" %>
+
+Make sure this matches the frame in your partial!
+```
+
+### Remote Search Component
+
+Use `basecoat_remote_search_tag` for a standalone search component with Turbo Stream support:
+
+```erb
+<%# Basic usage: %>
+<%= basecoat_remote_search_tag("/posts/search") %>
+
+<%# With custom turbo frame name: %>
+<%= basecoat_remote_search_tag("/posts/search", turbo_frame: "custom_frame") %>
+
+<%# With custom placeholder: %>
+<%= basecoat_remote_search_tag("/posts/search", placeholder: "Search posts...") %>
+```
+
+Your controller should respond with a Turbo Stream that updates the frame:
+
+```ruby
+# posts_controller.rb
+def search
+  @posts = Post.where("title LIKE ?", "%#{params[:query]}%")
+
+  respond_to do |format|
+    format.turbo_stream
+  end
+end
+```
+
+```erb
+<%# posts/search.turbo_stream.erb %>
+<%= turbo_stream.update "_posts_search" do %>
+  <% @posts.each do |post| %>
+    <%= link_to post.title, post_path(post), class: "block p-2 hover:bg-muted" %>
+  <% end %>
+<% end %>
+```
+
+Options:
+- `url` (required): The URL to fetch search results from
+- `turbo_frame`: Custom turbo frame name (defaults to underscored URL, e.g., `/posts/search` becomes `_posts_search`)
+- `placeholder`: Custom placeholder text (defaults to "Type a command or search...")
+
 ## Rake tasks
 
 ### Layout (required)
