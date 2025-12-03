@@ -20,9 +20,33 @@ namespace :basecoat do
   end
 
   desc "Install Basecoat application layout and partials"
-  task :install do
+  task :install => :environment do
     no_package_manager = false
     overwrite_all = { value: false }
+
+    # Add rails_icons gem and install lucide icons
+    gemfile_path = Rails.root.join("Gemfile")
+    gemfile_content = File.read(gemfile_path)
+    unless gemfile_content.include?("rails_icons")
+      puts "\n📦 Adding rails_icons..."
+      system("bundle add rails_icons")
+    end
+
+    puts "\n📦 Installing lucide icons..."
+    system("./bin/rails generate rails_icons:install --libraries=lucide")
+    puts "  Installed: lucide icon library"
+
+    # Update rails_icons configuration
+    rails_icons_config = Rails.root.join("config/initializers/rails_icons.rb")
+    if File.exist?(rails_icons_config)
+      config_content = File.read(rails_icons_config)
+      # Update lucide outline defaults
+      config_content.gsub!(/config\.libraries\.lucide\.outline\.default\.css\s*=\s*"[^"]*"/, 'config.libraries.lucide.outline.default.css = "size-4"')
+      config_content.gsub!(/config\.libraries\.lucide\.outline\.default\.stroke_width\s*=\s*"[^"]*"/, 'config.libraries.lucide.outline.default.stroke_width = "2"')
+      File.write(rails_icons_config, config_content)
+      puts "  Updated: rails_icons configuration with Basecoat defaults"
+    end
+
     # Install basecoat-css (detect package manager)
     puts "\n📦 Installing basecoat-css..."
 
@@ -319,13 +343,13 @@ namespace :basecoat do
             <% if defined?(user_signed_in?) && user_signed_in? %>
               <div id="dropdown-user" class="dropdown-menu">
                 <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-ghost size-8">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
+                  <%= icon "circle-user" %>
                 </button>
                 <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
                   <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
                     <div class="px-1 py-1.5">
                       <%= button_to destroy_user_session_path, method: :delete, class: "btn-link" do %>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <%= icon "log-out" %>
                         Log out
                       <% end %>
                     </div>
@@ -460,13 +484,13 @@ namespace :basecoat do
             <% if defined?(Current) && defined?(Current.user) && Current.user %>
               <div id="dropdown-user" class="dropdown-menu">
                 <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-ghost size-8">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
+                  <%= icon "circle-user" %>
                 </button>
                 <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
                   <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
                     <div class="px-1 py-1.5">
                       <%= button_to session_path, method: :delete, class: "btn-link" do %>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <%= icon "log-out" %>
                         Log out
                       <% end %>
                     </div>
