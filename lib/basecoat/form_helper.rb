@@ -99,6 +99,75 @@ module Basecoat
       end
     end
 
+    ##
+    # Renders a country select component with flag emojis.
+    #
+    # ==== Parameters
+    # * +name+ - The name attribute for the hidden input field (required)
+    # * +options+ - Hash of optional parameters:
+    #   * +:selected+ - The initially selected country code (e.g., "US")
+    #   * +:countries+ - Array of country codes to include (defaults to all countries)
+    #   * +:priority+ - Array of priority country codes to show at the top
+    #   * +:except+ - Array of country codes to exclude
+    #   * All other basecoat_select_tag options (placeholder, scrollable, etc.)
+    #
+    # ==== Examples
+    #   <%= basecoat_country_select :country %>
+    #   <%= basecoat_country_select :country, selected: "US" %>
+    #   <%= basecoat_country_select :country, priority: ["US", "CA", "GB"] %>
+    #   <%= basecoat_country_select :country, countries: ["US", "CA", "MX"] %>
+    def basecoat_country_select(name, options = {})
+      require 'countries'
+
+      # Extract country-specific options
+      country_codes = options.delete(:countries)
+      priority_codes = options.delete(:priority) || []
+      except_codes = options.delete(:except) || []
+
+      # Get all countries or filtered list
+      all_countries = if country_codes
+        country_codes.map { |code| ISO3166::Country[code] }.compact
+      else
+        ISO3166::Country.all
+      end
+
+      # Remove excluded countries
+      all_countries.reject! { |country| except_codes.include?(country.alpha2) } if except_codes.any?
+
+      # Build choices with flag emoji
+      choices = all_countries.map do |country|
+        ["#{country.emoji_flag} #{country.iso_short_name}", country.alpha2]
+      end
+
+      # Sort alphabetically by country name
+      choices.sort_by! { |label, _| label }
+
+      # Add priority countries at the top
+      if priority_codes.any?
+        priority_choices = priority_codes.map do |code|
+          country = ISO3166::Country[code]
+          next unless country
+          ["#{country.emoji_flag} #{country.iso_short_name}", country.alpha2]
+        end.compact
+
+        choices.reject! { |_, code| priority_codes.include?(code) }
+        choices = priority_choices + [["---", nil]] + choices
+      end
+
+      # Update selected_label if a country is selected
+      if options[:selected]
+        country = ISO3166::Country[options[:selected]]
+        options[:selected_label] = "#{country.emoji_flag} #{country.iso_short_name}" if country
+      end
+
+      # Set defaults
+      options[:placeholder] ||= "Search countries..."
+      options[:group_label] ||= "Countries"
+      options[:scrollable] = true unless options.key?(:scrollable)
+
+      basecoat_select_tag(name, choices, options)
+    end
+
     private
 
     def basecoat_select_button(select_id, selected_label)

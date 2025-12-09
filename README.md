@@ -131,6 +131,42 @@ Options:
 - `turbo_frame`: Custom turbo frame name (defaults to underscored URL, e.g., `/posts/search` becomes `_posts_search`)
 - `placeholder`: Custom placeholder text (defaults to "Type a command or search...")
 
+### Country Select Component
+
+Use `basecoat_country_select` for a country picker with flag emojis:
+
+```erb
+<%# Basic usage (all countries): %>
+<%= basecoat_country_select :country %>
+
+<%# With pre-selected country: %>
+<%= basecoat_country_select :country, selected: "US" %>
+
+<%# With priority countries at the top: %>
+<%= basecoat_country_select :country, priority: ["US", "CA", "GB"] %>
+
+<%# Only show specific countries: %>
+<%= basecoat_country_select :country, countries: ["US", "CA", "MX"] %>
+
+<%# Exclude specific countries: %>
+<%= basecoat_country_select :country, except: ["KP", "IR"] %>
+
+<%# In a form: %>
+<%= form_for @user do |f| %>
+  <%= f.label :country %>
+  <%= basecoat_country_select :country, selected: @user.country_code %>
+<% end %>
+```
+
+Options:
+- `selected`: Pre-select a country by its ISO 3166-1 alpha-2 code (e.g., "US")
+- `priority`: Array of country codes to show at the top of the list
+- `countries`: Array of country codes to include (shows only these countries)
+- `except`: Array of country codes to exclude
+- All `basecoat_select_tag` options (placeholder, scrollable, etc.)
+
+**Note:** This helper requires the `countries` gem, which is automatically installed with `rake basecoat:install`.
+
 ## Rake tasks
 
 ### Layout (required)
