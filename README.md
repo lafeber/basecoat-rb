@@ -30,6 +30,27 @@ Basecoat CSS combines tailwind with clean css classes. It creates the looks of s
 
 If you need more complex components; enrich the views with https://railsblocks.com/ or https://shadcn.rails-components.com/ or just the shadcn React components themselves.
 
+## Icons
+
+Basecoat uses the [lucide-rails](https://github.com/heyvito/lucide-rails) gem for beautiful, consistent icons throughout the UI. The gem is automatically installed as a dependency.
+
+You can use Lucide icons in your views with the `lucide_icon` helper:
+
+```erb
+<%= lucide_icon "home" %>
+<%= lucide_icon "user", class: "w-5 h-5" %>
+```
+
+Browse available icons at [lucide.dev](https://lucide.dev/icons/).
+
+### Using Different Icon Libraries
+
+If you prefer to use a different icon library, you can switch to the [rails_icons](https://github.com/nejdetkadir/rails_icons) gem which supports multiple icon libraries including Lucide, Font Awesome, Heroicons, and more. Simply:
+
+1. Add `rails_icons` to your Gemfile
+2. Replace `lucide_icon` calls with `icon` calls from rails_icons in the generated views
+3. Configure your preferred icon library in `config/initializers/rails_icons.rb`
+
 ## Form Helpers
 
 Basecoat includes custom form helpers for enhanced UI components:
