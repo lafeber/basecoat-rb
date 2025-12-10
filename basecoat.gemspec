@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
 
   # Dependencies
   spec.add_dependency "tailwindcss-rails", "~> 4.0"
+  spec.add_dependency "lucide-rails", "~> 0.1"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

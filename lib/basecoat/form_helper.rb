@@ -24,7 +24,7 @@ module Basecoat
 
       content_tag(:div, id: search_id, data: { controller: "search", search_url_value: url }, class: "command #{classes}", "aria-label": "Command menu") do
         content_tag(:header) do
-          basecoat_select_search_icon +
+          lucide_icon("search").html_safe +
           tag(:input,
             type: "search",
             id: "#{search_id}-input",
@@ -104,7 +104,7 @@ module Basecoat
     def basecoat_select_button(select_id, selected_label)
       content_tag(:button, type: "button", class: "btn-outline justify-between font-normal w-[180px]", id: "#{select_id}-trigger", "aria-haspopup": "listbox", "aria-expanded": "false", "aria-controls": "#{select_id}-listbox") do
         content_tag(:span, selected_label, class: "truncate") +
-        basecoat_select_chevron_icon
+        lucide_icon("chevrons-up-down", class: "text-muted-foreground opacity-50 shrink-0").html_safe
       end
     end
 
@@ -117,7 +117,7 @@ module Basecoat
 
     def basecoat_select_search_header(select_id, placeholder)
       content_tag(:header) do
-        basecoat_select_search_icon +
+        lucide_icon("search").html_safe +
         tag(:input, type: "text", value: "", placeholder: placeholder, autocomplete: "off", autocorrect: "off", spellcheck: "false", "aria-autocomplete": "list", role: "combobox", "aria-expanded": "false", "aria-controls": "#{select_id}-listbox", "aria-labelledby": "#{select_id}-trigger", data: { search_target: "input", action: "input->search#search" })
       end
     end
@@ -160,20 +160,6 @@ module Basecoat
         "data-value": value,
         "aria-selected": selected
       )
-    end
-
-    def basecoat_select_chevron_icon
-      content_tag(:svg, xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", class: "lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down text-muted-foreground opacity-50 shrink-0") do
-        tag(:path, d: "m7 15 5 5 5-5") +
-        tag(:path, d: "m7 9 5-5 5 5")
-      end
-    end
-
-    def basecoat_select_search_icon
-      content_tag(:svg, xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", class: "lucide lucide-search-icon lucide-search") do
-        tag(:circle, cx: "11", cy: "11", r: "8") +
-        tag(:path, d: "m21 21-4.3-4.3")
-      end
     end
   end
 end
