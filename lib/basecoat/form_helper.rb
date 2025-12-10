@@ -166,6 +166,11 @@ module Basecoat
       options[:scrollable] = true unless options.key?(:scrollable)
 
       basecoat_select_tag(name, choices, options)
+
+    rescue LoadError
+      content_tag :div, class: "alert-destructive" do
+        lucide_icon("circle-alert") + tag.section("gem 'countries' required")
+      end
     end
 
     private
