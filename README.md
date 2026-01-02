@@ -133,28 +133,28 @@ Options:
 
 ### Country Select Component
 
-Use `basecoat_country_select` for a country picker with flag emojis:
+Use `basecoat_country_select_tag` for a country picker with flag emojis:
 
 ```erb
 <%# Basic usage (all countries): %>
-<%= basecoat_country_select :country %>
+<%= basecoat_country_select_tag :country %>
 
 <%# With pre-selected country: %>
-<%= basecoat_country_select :country, selected: "US" %>
+<%= basecoat_country_select_tag :country, selected: "US" %>
 
 <%# With priority countries at the top: %>
-<%= basecoat_country_select :country, priority: ["US", "CA", "GB"] %>
+<%= basecoat_country_select_tag :country, priority: ["US", "CA", "GB"] %>
 
 <%# Only show specific countries: %>
-<%= basecoat_country_select :country, countries: ["US", "CA", "MX"] %>
+<%= basecoat_country_select_tag :country, countries: ["US", "CA", "MX"] %>
 
 <%# Exclude specific countries: %>
-<%= basecoat_country_select :country, except: ["KP", "IR"] %>
+<%= basecoat_country_select_tag :country, except: ["KP", "IR"] %>
 
 <%# In a form: %>
 <%= form_for @user do |f| %>
   <%= f.label :country %>
-  <%= basecoat_country_select :country, selected: @user.country_code %>
+  <%= f.basecoat_country_select :country %>
 <% end %>
 ```
 

@@ -112,11 +112,11 @@ module Basecoat
     #   * All other basecoat_select_tag options (placeholder, scrollable, etc.)
     #
     # ==== Examples
-    #   <%= basecoat_country_select :country %>
-    #   <%= basecoat_country_select :country, selected: "US" %>
-    #   <%= basecoat_country_select :country, priority: ["US", "CA", "GB"] %>
-    #   <%= basecoat_country_select :country, countries: ["US", "CA", "MX"] %>
-    def basecoat_country_select(name, options = {})
+    #   <%= basecoat_country_select_tag :country %>
+    #   <%= basecoat_country_select_tag :country, selected: "US" %>
+    #   <%= basecoat_country_select_tag :country, priority: ["US", "CA", "GB"] %>
+    #   <%= basecoat_country_select_tag :country, countries: ["US", "CA", "MX"] %>
+    def basecoat_country_select_tag(name, options = {})
       require 'countries'
 
       # Extract country-specific options
