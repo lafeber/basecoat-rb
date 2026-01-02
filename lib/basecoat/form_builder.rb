@@ -9,5 +9,14 @@ module Basecoat
 
       @template.basecoat_select_tag(name, choices, options)
     end
+
+    def basecoat_country_select(method, options = {})
+      value = @object.public_send(method) if @object
+      options = options.merge(selected: value) if value
+
+      name = "#{@object_name}[#{method}]"
+
+      @template.basecoat_country_select_tag(name, options)
+    end
   end
 end
