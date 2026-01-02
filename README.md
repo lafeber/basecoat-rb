@@ -165,7 +165,7 @@ Options:
 - `except`: Array of country codes to exclude
 - All `basecoat_select_tag` options (placeholder, scrollable, etc.)
 
-**Note:** This helper requires the `countries` gem, which is automatically installed with `rake basecoat:install`.
+**Note:** This helper requires the `countries` gem.
 
 ## Rake tasks
 
