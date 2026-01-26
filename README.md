@@ -13,6 +13,7 @@ Try it from scratch:
 
     rails new myproject -c tailwind
     cd myproject
+    yarn
     bundle add basecoat
     rails basecoat:install
     rails g scaffold Post title:string! description:text posted_at:datetime active:boolean rating:integer 
