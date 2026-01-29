@@ -51,7 +51,7 @@ namespace :basecoat do
 
       unless importmap_content.include?("basecoat-css")
         File.open(importmap_path, "a") do |f|
-          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.9/dist/js/all.js\""
+          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/all.js\""
         end
         puts "  Added: basecoat-css to config/importmap.rb"
       end
@@ -236,7 +236,7 @@ namespace :basecoat do
         head_content = File.read(head_path)
         unless head_content.include?("basecoat.cdn.min.css")
           cdn_link = '  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.9/dist/basecoat.cdn.min.css">'
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/basecoat.cdn.min.css">'
           # Insert before the closing </head> tag
           updated_content = head_content.sub(/(<\/head>)/, "#{cdn_link}\n\\1")
           File.write(head_path, updated_content)
