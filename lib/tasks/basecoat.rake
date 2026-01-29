@@ -89,18 +89,6 @@ namespace :basecoat do
         puts "  Added: cool view transition to app/javascript/application.js"
       end
 
-      # Copy theme_controller.js
-      theme_controller_source = File.expand_path("../generators/basecoat/templates/theme_controller.js", __dir__)
-      theme_controller_destination = Rails.root.join("app/javascript/controllers/theme_controller.js")
-
-      FileUtils.mkdir_p(File.dirname(theme_controller_destination))
-      if prompt_overwrite(theme_controller_destination, overwrite_all)
-        FileUtils.cp(theme_controller_source, theme_controller_destination)
-        puts "  Created: app/javascript/controllers/theme_controller.js"
-      else
-        puts "  Skipped: app/javascript/controllers/theme_controller.js"
-      end
-
       # Copy search_controller.js
       search_controller_source = File.expand_path("../generators/basecoat/templates/search_controller.js", __dir__)
       search_controller_destination = Rails.root.join("app/javascript/controllers/search_controller.js")
