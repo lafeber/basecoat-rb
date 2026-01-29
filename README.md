@@ -223,7 +223,7 @@ rake basecoat:install:pagy
 - Rails 8.0+
 - Tailwind CSS ([installation instructions](https://github.com/rails/tailwindcss-rails))
 - Basecoat CSS
-- Stimulus (for the theme toggle, can be moved to something else if you desire...)
+- Stimulus (for the search helper)
 
 ## Issues
 
