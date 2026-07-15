@@ -52,12 +52,12 @@
         <p>Unhappy? You can delete your account below.</p>
       </header>
       <footer>
-        <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete, class: "btn-outline" %>
+        <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?", variant: "outline" }, method: :delete, class: "btn" %>
       </footer>
     </div>
 
     <div class="mt-6">
-      <%= link_to "Back", :back, class: "btn-ghost" %>
+      <%= link_to "Back", :back, class: "btn", data: { variant: "ghost" } %>
     </div>
   </div>
 </div>

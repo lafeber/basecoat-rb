@@ -51,7 +51,7 @@ namespace :basecoat do
 
       unless importmap_content.include?("basecoat-css")
         File.open(importmap_path, "a") do |f|
-          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/all.js\""
+          f.puts "\npin \"basecoat-css/all\", to: \"https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/js/all.js\""
         end
         puts "  Added: basecoat-css to config/importmap.rb"
       end
@@ -192,6 +192,38 @@ namespace :basecoat do
       end
     end
 
+    # Make sure the theme bootstrap script is present in _head.html.erb.
+    # Basecoat only writes the themeMode localStorage key; applying it on
+    # page load is the app's job. Without this script the theme reverts to
+    # light on every refresh (and dark mode flickers). This matters when
+    # the head was extracted from an existing layout instead of copied
+    # from the gem's template.
+    head_destination = partials_destination.join("_head.html.erb")
+    if File.exist?(head_destination)
+      head_content = File.read(head_destination)
+      unless head_content.include?("themeMode")
+        theme_script = <<~HTML.gsub(/^/, "  ")
+          <script>
+              // Apply the stored theme before first paint to prevent flickering.
+              // Toggling is handled by basecoat (window.basecoat.theme), which
+              // reads and writes the same 'themeMode' localStorage key.
+              (() => {
+                  try {
+                      const stored = localStorage.getItem('themeMode');
+                      if (stored ? stored === 'dark'
+                          : matchMedia('(prefers-color-scheme: dark)').matches) {
+                          document.documentElement.classList.add('dark');
+                      }
+                  } catch (_) {}
+              })();
+          </script>
+        HTML
+        updated_content = head_content.sub(/(<\/head>)/, "#{theme_script}\\1")
+        File.write(head_destination, updated_content)
+        puts "  Added: theme bootstrap script to app/views/layouts/_head.html.erb"
+      end
+    end
+
     # Copy application layout
     layout_source = File.expand_path("../generators/basecoat/templates/application.html.erb", __dir__)
     if prompt_overwrite(layout_destination, overwrite_all)
@@ -236,7 +268,7 @@ namespace :basecoat do
         head_content = File.read(head_path)
         unless head_content.include?("basecoat.cdn.min.css")
           cdn_link = '  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/basecoat.cdn.min.css">'
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">'
           # Insert before the closing </head> tag
           updated_content = head_content.sub(/(<\/head>)/, "#{cdn_link}\n\\1")
           File.write(head_path, updated_content)
@@ -306,13 +338,13 @@ namespace :basecoat do
 
             <% if defined?(user_signed_in?) && user_signed_in? %>
               <div id="dropdown-user" class="dropdown-menu">
-                <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-ghost size-8">
+                <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn size-8" data-variant="ghost" data-size="icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
                 </button>
                 <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
                   <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
                     <div class="px-1 py-1.5">
-                      <%= button_to destroy_user_session_path, method: :delete, class: "btn-link" do %>
+                      <%= button_to destroy_user_session_path, method: :delete, class: "btn", data: { variant: "link" } do %>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                         Log out
                       <% end %>
@@ -447,13 +479,13 @@ namespace :basecoat do
 
             <% if defined?(Current) && defined?(Current.user) && Current.user %>
               <div id="dropdown-user" class="dropdown-menu">
-                <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn-ghost size-8">
+                <button type="button" id="dropdown-user-trigger" aria-haspopup="menu" aria-controls="dropdown-user-menu" aria-expanded="false" class="btn size-8" data-variant="ghost" data-size="icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
                 </button>
                 <div id="dropdown-user-popover" data-popover="" aria-hidden="true" data-align="end">
                   <div role="menu" id="dropdown-user-menu" aria-labelledby="dropdown-user-trigger">
                     <div class="px-1 py-1.5">
-                      <%= button_to session_path, method: :delete, class: "btn-link" do %>
+                      <%= button_to session_path, method: :delete, class: "btn", data: { variant: "link" } do %>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                         Log out
                       <% end %>

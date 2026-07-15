@@ -19,6 +19,9 @@
   <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
   <%= javascript_importmap_tags %>
   <script>
+      // Apply the stored theme before first paint to prevent flickering.
+      // Toggling is handled by basecoat (window.basecoat.theme), which
+      // reads and writes the same 'themeMode' localStorage key.
       (() => {
           try {
               const stored = localStorage.getItem('themeMode');
@@ -27,18 +30,6 @@
                   document.documentElement.classList.add('dark');
               }
           } catch (_) {}
-
-          const apply = dark => {
-              document.documentElement.classList.toggle('dark', dark);
-              try { localStorage.setItem('themeMode', dark ? 'dark' : 'light'); } catch (_) {}
-          };
-
-          document.addEventListener('basecoat:theme', (event) => {
-              const mode = event.detail?.mode;
-              apply(mode === 'dark' ? true
-                  : mode === 'light' ? false
-                      : !document.documentElement.classList.contains('dark'));
-          });
       })();
   </script>
 </head>

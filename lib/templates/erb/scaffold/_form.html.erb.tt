@@ -40,7 +40,7 @@
 
 <% end -%>
   <div class="flex justify-end space-x-3 pt-6">
-    <%%= link_to "Cancel", <%= index_helper(type: :path) %>, class: "btn-outline" %>
+    <%%= link_to "Cancel", <%= index_helper(type: :path) %>, class: "btn", data: { variant: "outline" } %>
     <%%= form.submit class: "btn" %>
   </div>
 <%% end %>

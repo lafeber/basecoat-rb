@@ -84,11 +84,12 @@ module Basecoat
       scrollable = options[:scrollable] || false
       turbo_frame = options[:turbo_frame] || (url ? url.gsub("/", "_") : nil)
 
-      select_attrs = { id: select_id, class: "select" }
+      select_attrs = { id: select_id, class: "combobox" }
       if url
         select_attrs[:data] = {
           controller: "search",
-          search_url_value: url
+          search_url_value: url,
+          filter: "manual" # filtering happens server-side, tell basecoat not to filter
         }
       end
 
@@ -168,7 +169,7 @@ module Basecoat
       basecoat_select_tag(name, choices, options)
 
     rescue LoadError
-      content_tag :div, class: "alert-destructive" do
+      content_tag :div, class: "alert", "data-variant": "destructive" do
         lucide_icon("circle-alert") + tag.section("gem 'countries' required")
       end
     end
@@ -176,23 +177,40 @@ module Basecoat
     private
 
     def basecoat_select_button(select_id, selected_label)
-      content_tag(:button, type: "button", class: "btn-outline justify-between font-normal w-[180px]", id: "#{select_id}-trigger", "aria-haspopup": "listbox", "aria-expanded": "false", "aria-controls": "#{select_id}-listbox") do
-        content_tag(:span, selected_label, class: "truncate") +
+      content_tag(:button, type: "button", class: "btn justify-between font-normal w-[180px]", "data-variant": "outline", id: "#{select_id}-trigger", "aria-haspopup": "listbox", "aria-expanded": "false", "aria-controls": "#{select_id}-listbox") do
+        content_tag(:span, selected_label, class: "truncate", "data-value": "") +
         lucide_icon("chevrons-up-down", class: "text-muted-foreground opacity-50 shrink-0").html_safe
       end
     end
 
     def basecoat_select_popover(select_id, choices, group_label, placeholder, selected_value, url, scrollable, turbo_frame)
       content_tag(:div, id: "#{select_id}-popover", data: { popover: true }, "aria-hidden": "true") do
-        basecoat_select_search_header(select_id, placeholder) +
+        basecoat_select_search_input(select_id, placeholder, url) +
         basecoat_select_listbox(select_id, choices, group_label, selected_value, url, scrollable, turbo_frame)
       end
     end
 
-    def basecoat_select_search_header(select_id, placeholder)
-      content_tag(:header) do
+    def basecoat_select_search_input(select_id, placeholder, url)
+      input_attrs = {
+        type: "text",
+        value: "",
+        placeholder: placeholder,
+        autocomplete: "off",
+        autocorrect: "off",
+        spellcheck: "false",
+        "aria-autocomplete": "list",
+        role: "combobox",
+        "aria-expanded": "false",
+        "aria-controls": "#{select_id}-listbox",
+        "aria-labelledby": "#{select_id}-trigger"
+      }
+      # Local filtering is handled by basecoat itself; remote search goes
+      # through the Stimulus search controller and Turbo Streams.
+      input_attrs[:data] = { search_target: "input", action: "input->search#search" } if url
+
+      content_tag(:div, class: "input-group") do
         lucide_icon("search").html_safe +
-        tag(:input, type: "text", value: "", placeholder: placeholder, autocomplete: "off", autocorrect: "off", spellcheck: "false", "aria-autocomplete": "list", role: "combobox", "aria-expanded": "false", "aria-controls": "#{select_id}-listbox", "aria-labelledby": "#{select_id}-trigger", data: { search_target: "input", action: "input->search#search" })
+        tag(:input, **input_attrs)
       end
     end
 
@@ -201,17 +219,11 @@ module Basecoat
         role: "listbox",
         id: "#{select_id}-listbox",
         "aria-orientation": "vertical",
-        "aria-labelledby": "#{select_id}-trigger"
+        "aria-labelledby": "#{select_id}-trigger",
+        data: { empty: "No results found." }
       }
 
       listbox_attrs[:class] = "scrollbar overflow-y-auto max-h-64" if scrollable
-
-      if url
-        listbox_attrs[:data] = {
-          controller: "search",
-          search_url_value: url
-        }
-      end
 
       content_tag(:div, listbox_attrs) do
         if url

@@ -1,4 +1,4 @@
-<button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="left" onclick="document.dispatchEvent(new CustomEvent('basecoat:theme'))" class="btn-ghost size-8">
+<button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="left" onclick="window.basecoat.theme.toggle()" class="btn size-8" data-variant="ghost" data-size="icon">
   <span class="hidden dark:block"><%= lucide_icon "sun" %></span>
   <span class="block dark:hidden"><%= lucide_icon "moon" %></span>
 </button>
