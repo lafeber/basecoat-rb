@@ -36,7 +36,7 @@
             </td>
 <% end -%>
             <td class="bg-background sticky right-0">
-              <%%= link_to "Show", <%= model_resource_name(singular_table_name) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
+              <%%= link_to "Show", <%= model_resource_name(singular_table_name) %>, class: "btn", data: { variant: "outline", turbo_action: "advance" } %>
             </td>
           </tr>
         <%% end %>

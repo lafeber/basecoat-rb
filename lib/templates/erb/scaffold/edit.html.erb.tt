@@ -12,8 +12,8 @@
     </div>
 
     <div class="flex flex-wrap gap-3 mt-6">
-      <%%= link_to "Show this <%= human_name.downcase %>", <%= model_resource_name(prefix: "@") %>, class: "btn-outline", data: { turbo_action: "advance" } %>
-      <%%= link_to "Back to <%= human_name.pluralize.downcase %>", <%= index_helper(type: :path) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
+      <%%= link_to "Show this <%= human_name.downcase %>", <%= model_resource_name(prefix: "@") %>, class: "btn", data: { variant: "outline", turbo_action: "advance" } %>
+      <%%= link_to "Back to <%= human_name.pluralize.downcase %>", <%= index_helper(type: :path) %>, class: "btn", data: { variant: "outline", turbo_action: "advance" } %>
     </div>
   </div>
 <%% end %>

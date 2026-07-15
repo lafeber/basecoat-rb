@@ -12,7 +12,7 @@
     </div>
 
     <div class="mt-6">
-      <%%= link_to "Back to <%= human_name.pluralize.downcase %>", <%= index_helper(type: :path) %>, class: "btn-outline", data: { turbo_action: "advance" } %>
+      <%%= link_to "Back to <%= human_name.pluralize.downcase %>", <%= index_helper(type: :path) %>, class: "btn", data: { variant: "outline", turbo_action: "advance" } %>
     </div>
   </div>
 <%% end %>
